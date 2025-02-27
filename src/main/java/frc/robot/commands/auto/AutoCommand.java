@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.AutoConstants.AutoPattern;
 import frc.robot.OperatorInput;
 import frc.robot.commands.drive.DriveOnHeadingCommand;
+import frc.robot.commands.drive.DriveToTargetCommand;
+import frc.robot.commands.drive.RotateToTargetCommand;
 import frc.robot.subsystems.DriveSubsystem;
 
 
@@ -66,6 +68,18 @@ public class AutoCommand extends SequentialCommandGroup {
 
             // Drive forward 1m at .2 speed
             addCommands(new DriveOnHeadingCommand(0, .2, 100, driveSubsystem));
+            return;
+
+        case PATH_TEST_THING:
+            double[][] targets = { { 6.26, 4.22 } };
+
+            for (int i = 0; i < targets.length; i++) {
+                double targetX = targets[i][0];
+                double targetY = targets[i][1];
+
+                addCommands(new RotateToTargetCommand(targetX, targetY, driveSubsystem));
+                addCommands(new DriveToTargetCommand(targetX, targetY, driveSubsystem));
+            }
             return;
 
         case BOX:
