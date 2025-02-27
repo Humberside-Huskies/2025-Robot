@@ -12,7 +12,9 @@ import frc.robot.Constants.OperatorInputConstants;
 import frc.robot.commands.CancelCommand;
 import frc.robot.commands.GameController;
 import frc.robot.commands.drive.DriveOnHeadingCommand;
+import frc.robot.commands.vision.DefaultVisionCommand;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 /**
  * The DriverController exposes all driver functions
@@ -21,7 +23,7 @@ import frc.robot.subsystems.DriveSubsystem;
  */
 public class OperatorInput extends SubsystemBase {
 
-    private final GameController driverController;
+    public final GameController  driverController;
 
     // Auto Setup Choosers
     SendableChooser<AutoPattern> autoPatternChooser = new SendableChooser<>();
@@ -42,6 +44,8 @@ public class OperatorInput extends SubsystemBase {
         SmartDashboard.putData("Auto Pattern", autoPatternChooser);
         autoPatternChooser.addOption("Drive Forward", AutoPattern.DRIVE_FORWARD);
         autoPatternChooser.addOption("Box", AutoPattern.BOX);
+        autoPatternChooser.addOption("Path Test", AutoPattern.PATH_TEST_THING);
+        autoPatternChooser.addOption("My Case", AutoPattern.MY_CASE);
 
         waitTimeChooser.setDefaultOption("No wait", 0);
         SmartDashboard.putData("Auto Wait Time", waitTimeChooser);
@@ -65,7 +69,7 @@ public class OperatorInput extends SubsystemBase {
      *
      * @param driveSubsystem
      */
-    public void configureButtonBindings(DriveSubsystem driveSubsystem) {
+    public void configureButtonBindings(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
 
         // Cancel Command - cancels all running commands on all subsystems
         new Trigger(() -> isCancel())
@@ -78,18 +82,19 @@ public class OperatorInput extends SubsystemBase {
                 driveSubsystem.resetEncoders();
             }));
 
+        new Trigger(() -> isDriveToVisionTarget())
+            .onTrue(new DefaultVisionCommand(driveSubsystem, visionSubsystem));
+
+
         // Configure the DPAD to drive one meter on a heading
-        new Trigger(() -> driverController.getPOV() == 0)
-            .onTrue(new DriveOnHeadingCommand(0, .5, 100, driveSubsystem));
+        new Trigger(() -> driverController.getPOV() == 0).onTrue(new DriveOnHeadingCommand(0, .5, 100, driveSubsystem));
 
-        new Trigger(() -> driverController.getPOV() == 90)
-            .onTrue(new DriveOnHeadingCommand(90, .5, 100, driveSubsystem));
+        new Trigger(() -> driverController.getPOV() == 90).onTrue(new DriveOnHeadingCommand(90, .5, 100, driveSubsystem));
 
-        new Trigger(() -> driverController.getPOV() == 180)
-            .onTrue(new DriveOnHeadingCommand(180, .5, 100, driveSubsystem));
+        new Trigger(() -> driverController.getPOV() == 180).onTrue(new DriveOnHeadingCommand(180, .5, 100, driveSubsystem));
 
-        new Trigger(() -> driverController.getPOV() == 270)
-            .onTrue(new DriveOnHeadingCommand(270, .5, 100, driveSubsystem));
+        new Trigger(() -> driverController.getPOV() == 270).onTrue(new DriveOnHeadingCommand(270, .5, 100, driveSubsystem));
+
     }
 
     /*
@@ -149,6 +154,15 @@ public class OperatorInput extends SubsystemBase {
         return driverController.getLeftY();
     }
 
+    public double isClimb() {
+        return driverController.getLeftTriggerAxis();
+    }
+
+    // cool function buddy climbing things
+    public double isRetract() {
+        return driverController.getRightTriggerAxis();
+    }
+
     public double getTurn() {
 
         if (driveModeChooser.getSelected() == DriveMode.SINGLE_STICK_LEFT) {
@@ -156,6 +170,10 @@ public class OperatorInput extends SubsystemBase {
         }
 
         return driverController.getRightX();
+    }
+
+    public boolean isDriveToVisionTarget() {
+        return driverController.getAButton();
     }
 
     /*

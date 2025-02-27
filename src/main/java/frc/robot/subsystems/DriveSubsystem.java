@@ -9,7 +9,11 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.studica.frc.AHRS;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
@@ -56,49 +60,65 @@ public class DriveSubsystem extends SubsystemBase {
         }
     }
 
-    private final LightsSubsystem     lightsSubsystem;
+
+    private final LightsSubsystem           lightsSubsystem;
+    private final VisionSubsystem           visionSubsystem;
 
     // The motors on the left side of the drive.
-    private final SparkMax            leftPrimaryMotor   = new SparkMax(DriveConstants.LEFT_MOTOR_CAN_ID, MotorType.kBrushless);
-    private final SparkMax            leftFollowerMotor  = new SparkMax(DriveConstants.LEFT_MOTOR_CAN_ID + 1,
+    private final SparkMax                  leftPrimaryMotor         = new SparkMax(DriveConstants.LEFT_MOTOR_CAN_ID,
+        MotorType.kBrushless);
+    private final SparkMax                  leftFollowerMotor        = new SparkMax(DriveConstants.LEFT_MOTOR_CAN_ID + 1,
         MotorType.kBrushless);
 
     // The motors on the right side of the drive.
-    private final SparkMax            rightPrimaryMotor  = new SparkMax(DriveConstants.RIGHT_MOTOR_CAN_ID, MotorType.kBrushless);
-    private final SparkMax            rightFollowerMotor = new SparkMax(DriveConstants.RIGHT_MOTOR_CAN_ID + 1,
+    private final SparkMax                  rightPrimaryMotor        = new SparkMax(DriveConstants.RIGHT_MOTOR_CAN_ID,
+        MotorType.kBrushless);
+    private final SparkMax                  rightFollowerMotor       = new SparkMax(DriveConstants.RIGHT_MOTOR_CAN_ID + 1,
         MotorType.kBrushless);
 
-    private double                    leftSpeed          = 0;
-    private double                    rightSpeed         = 0;
-
     // Encoders
-    private final RelativeEncoder     leftEncoder        = leftPrimaryMotor.getEncoder();
-    private final RelativeEncoder     rightEncoder       = rightPrimaryMotor.getEncoder();
+    private final RelativeEncoder           leftEncoder              = leftPrimaryMotor.getEncoder();
+    private final RelativeEncoder           rightEncoder             = rightPrimaryMotor.getEncoder();
 
-    private double                    leftEncoderOffset  = 0;
-    private double                    rightEncoderOffset = 0;
+
+    private final AnalogInput               ultrasonicDistanceSensor = new AnalogInput(0);
+
+    private final double                    ULTRASONIC_M             = (609.6 - 30.5) / (2.245 - .12);
+    private final double                    ULTRASONIC_B             = 609.6 - ULTRASONIC_M * 2.245;
+
+
+    public double                           leftSpeed                = 0;
+    public double                           rightSpeed               = 0;
+
+    private double                          leftEncoderOffset        = 0;
+    private double                          rightEncoderOffset       = 0;
 
     /*
      * Gyro
      */
-    private NavXGyro                  navXGyro           = null;
+    private NavXGyro                        navXGyro                 = new NavXGyro();
 
-    private double                    gyroHeadingOffset  = 0;
-    private double                    gyroPitchOffset    = 0;
+    private double                          gyroHeadingOffset        = 0;
+    private double                          gyroPitchOffset          = 0;
+
+    // odometry
+    private final DifferentialDriveOdometry odometry;
 
     /*
      * Simulation fields
      */
-    private Field2d                   field              = null;
-    private DifferentialDrivetrainSim drivetrainSim      = null;
-    private double                    simAngle           = 0;
-    private double                    simLeftEncoder     = 0;
-    private double                    simRightEncoder    = 0;
+    // private DifferentialDriveOdometry m_odometry;
+    private Field2d                         field                    = null;
+    private DifferentialDrivetrainSim       drivetrainSim            = null;
+    private double                          simAngle                 = 0;
+    private double                          simLeftEncoder           = 0;
+    private double                          simRightEncoder          = 0;
 
     /** Creates a new DriveSubsystem. */
-    public DriveSubsystem(LightsSubsystem lightsSubsystem) {
+    public DriveSubsystem(LightsSubsystem lightsSubsystem, VisionSubsystem visionSubsystem) {
 
         this.lightsSubsystem = lightsSubsystem;
+        this.visionSubsystem = visionSubsystem;
 
         /*
          * Configure Left Side Motors
@@ -124,6 +144,8 @@ public class DriveSubsystem extends SubsystemBase {
         config.follow(rightPrimaryMotor);
         rightFollowerMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
+
+
         resetEncoders();
 
         // Reset the Gyro Heading
@@ -136,15 +158,34 @@ public class DriveSubsystem extends SubsystemBase {
             SmartDashboard.putData("Field", field);
 
             drivetrainSim = DifferentialDrivetrainSim.createKitbotSim(
-                KitbotMotor.kDoubleNEOPerSide, // Double NEO per side
-                KitbotGearing.k10p71, // 10.71:1
-                KitbotWheelSize.kSixInch, // 6" diameter wheels.
-                null // No measurement noise.
+                KitbotMotor.kDoubleNEOPerSide,                                                                                                                                                                                                                                                                                                                                                                   // Double
+                                                                                                                                                                                                                                                                                                                                                                                                                 // NEO
+                                                                                                                                                                                                                                                                                                                                                                                                                 // per
+                                                                                                                                                                                                                                                                                                                                                                                                                 // side
+                KitbotGearing.k10p71,                                                                                                                                                                                                                                                                                                                                                                            // 10.71:1
+                KitbotWheelSize.kSixInch,                                                                                                                                                                                                                                                                                                                                                                        // 6"
+                                                                                                                                                                                                                                                                                                                                                                                                                 // diameter
+                                                                                                                                                                                                                                                                                                                                                                                                                 // wheels.
+                null                                                                                                                                                                                                                                                                                                                                                                                             // No
+                                                                                                                                                                                                                                                                                                                                                                                                                 // measurement
+                                                                                                                                                                                                                                                                                                                                                                                                                 // noise.
             );
+
+            odometry      = new DifferentialDriveOdometry(Rotation2d.fromDegrees(0), 0, 0);
+
         }
         else {
-            navXGyro = new NavXGyro();
+            odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(navXGyro.getAngle()), 0, 0);
         }
+    }
+
+    public double getUltrasonicDistanceCm() {
+
+        double ultrasonicVoltage = ultrasonicDistanceSensor.getVoltage();
+
+        double distanceCm        = ULTRASONIC_M * ultrasonicVoltage + ULTRASONIC_B;
+
+        return Math.round(distanceCm);
     }
 
     /**
@@ -175,9 +216,7 @@ public class DriveSubsystem extends SubsystemBase {
 
         // Send the offset to the navX in order to have the
         // compass on the dashboard appear at the correct heading.
-        if (navXGyro != null) {
-            navXGyro.setAngleAdjustment(gyroHeadingOffset);
-        }
+        navXGyro.setAngleAdjustment(gyroHeadingOffset);
     }
 
     /**
@@ -201,11 +240,7 @@ public class DriveSubsystem extends SubsystemBase {
      */
     public double getHeading() {
 
-        double gyroYawAngle = 0;
-
-        if (navXGyro != null) {
-            gyroYawAngle += navXGyro.getYaw();
-        }
+        double gyroYawAngle = navXGyro.getYaw();
 
         // Add the simulated angle to support simulation
         gyroYawAngle += simAngle;
@@ -262,11 +297,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     public double getPitch() {
 
-        double gyroPitch = 0;
-
-        if (navXGyro != null) {
-            gyroPitch += navXGyro.getPitch();
-        }
+        double gyroPitch = navXGyro.getPitch();
 
         // adjust by the offset that was saved when the gyro
         // pitch was last set.
@@ -296,25 +327,7 @@ public class DriveSubsystem extends SubsystemBase {
      * @return the left drive encoder
      */
     public double getLeftEncoder() {
-        return leftEncoder.getPosition() + simLeftEncoder + leftEncoderOffset;
-    }
-
-    /**
-     * Gets the left velocity.
-     *
-     * @return the left drive encoder speed
-     */
-    public double getLeftEncoderSpeed() {
-        return leftEncoder.getVelocity();
-    }
-
-    /**
-     * Gets the right velocity.
-     *
-     * @return the right drive encoder speed
-     */
-    public double getRightEncoderSpeed() {
-        return rightEncoder.getVelocity();
+        return simLeftEncoder + leftEncoderOffset;
     }
 
     /**
@@ -323,7 +336,7 @@ public class DriveSubsystem extends SubsystemBase {
      * @return the right drive encoder
      */
     public double getRightEncoder() {
-        return rightEncoder.getPosition() + simRightEncoder + rightEncoderOffset;
+        return simRightEncoder + rightEncoderOffset;
     }
 
     /** Resets the drive encoders to zero. */
@@ -353,15 +366,23 @@ public class DriveSubsystem extends SubsystemBase {
         rightPrimaryMotor.set(this.rightSpeed);
     }
 
+
     /** Safely stop the subsystem from moving */
     public void stop() {
         setMotorSpeeds(0, 0);
+    }
+
+
+    public Pose2d getPose() {
+        return odometry.getPoseMeters();
     }
 
     @Override
     public void periodic() {
 
         lightsSubsystem.setDriveMotorSpeeds(leftSpeed, rightSpeed);
+
+        // m_odometry.update(navXGyro.getRotation2d(), getLeftEncoder(), getRightEncoder());
 
         SmartDashboard.putNumber("Right Motor", rightSpeed);
         SmartDashboard.putNumber("Left  Motor", leftSpeed);
@@ -370,14 +391,15 @@ public class DriveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Left Encoder", Math.round(getLeftEncoder() * 100) / 100d);
         SmartDashboard.putNumber("Avg Encoder", Math.round(getAverageEncoderValue() * 100) / 100d);
         SmartDashboard.putNumber("Distance (cm)", Math.round(getEncoderDistanceCm() * 10) / 10d);
-        SmartDashboard.putNumber("Right Velocity", Math.round(getRightEncoderSpeed() * 100) / 100d);
-        SmartDashboard.putNumber("Left Velocity", Math.round(getLeftEncoderSpeed() * 100) / 100d);
 
-        if (navXGyro != null) {
-            SmartDashboard.putData("Gyro", navXGyro);
-        }
+        SmartDashboard.putData("Gyro", navXGyro);
         SmartDashboard.putNumber("Gyro Heading", getHeading());
         SmartDashboard.putNumber("Gyro Pitch", getPitch());
+
+        SmartDashboard.putNumber("Ultrasonic Voltage", ultrasonicDistanceSensor.getVoltage());
+        SmartDashboard.putNumber("Ultrasonic Distance (cm)", getUltrasonicDistanceCm());
+
+        odometry.resetPose(visionSubsystem.getBotPose());
 
     }
 

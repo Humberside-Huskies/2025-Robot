@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.AutoConstants.AutoPattern;
 import frc.robot.OperatorInput;
 import frc.robot.commands.drive.DriveOnHeadingCommand;
+import frc.robot.commands.drive.RotateToTargetCommand;
 import frc.robot.subsystems.DriveSubsystem;
 
 
@@ -55,7 +56,17 @@ public class AutoCommand extends SequentialCommandGroup {
          */
         switch (autoPattern) {
 
+        case MY_CASE:
+            addCommands(new DriveOnHeadingCommand(0, .4, 50, false, driveSubsystem));
+            addCommands(new DriveOnHeadingCommand(90, .4, 50, false, driveSubsystem));
+
+            return;
+
         case DO_NOTHING:
+            return;
+
+        case PATH_TEST_THING:
+            addCommands(new RotateToTargetCommand(-5.78, 0.14, driveSubsystem));
             return;
 
         case DRIVE_FORWARD:

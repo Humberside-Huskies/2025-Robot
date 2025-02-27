@@ -27,7 +27,8 @@ public final class Constants {
     public static final class AutoConstants {
 
         public static enum AutoPattern {
-            DO_NOTHING, DRIVE_FORWARD, BOX
+            DO_NOTHING, DRIVE_FORWARD, BOX, PATH_TEST_THING, MY_CASE;
+
         }
     }
 
@@ -60,5 +61,11 @@ public final class Constants {
 
         public static final int LED_STRING_PWM_PORT = 0;
         public static final int LED_STRING_LENGTH   = 60;
+    }
+
+    public static final class ElevatorConstant {
+        public static final int    ELEVATOR_MOTOR_CAN_ID  = 0;
+        public static final double ELEVATOR_CLIMB_SPEED   = .5;
+        public static final double ELEVATOR_RETRACT_SPEED = -.5;
     }
 }
