@@ -9,6 +9,9 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.studica.frc.AHRS;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
@@ -56,44 +59,50 @@ public class DriveSubsystem extends SubsystemBase {
         }
     }
 
-    private final LightsSubsystem     lightsSubsystem;
+    private final LightsSubsystem           lightsSubsystem;
 
     // The motors on the left side of the drive.
-    private final SparkMax            leftPrimaryMotor   = new SparkMax(DriveConstants.LEFT_MOTOR_CAN_ID, MotorType.kBrushless);
-    private final SparkMax            leftFollowerMotor  = new SparkMax(DriveConstants.LEFT_MOTOR_CAN_ID + 1,
+    private final SparkMax                  leftPrimaryMotor   = new SparkMax(DriveConstants.LEFT_MOTOR_CAN_ID,
+        MotorType.kBrushless);
+    private final SparkMax                  leftFollowerMotor  = new SparkMax(DriveConstants.LEFT_MOTOR_CAN_ID + 1,
         MotorType.kBrushless);
 
     // The motors on the right side of the drive.
-    private final SparkMax            rightPrimaryMotor  = new SparkMax(DriveConstants.RIGHT_MOTOR_CAN_ID, MotorType.kBrushless);
-    private final SparkMax            rightFollowerMotor = new SparkMax(DriveConstants.RIGHT_MOTOR_CAN_ID + 1,
+    private final SparkMax                  rightPrimaryMotor  = new SparkMax(DriveConstants.RIGHT_MOTOR_CAN_ID,
+        MotorType.kBrushless);
+    private final SparkMax                  rightFollowerMotor = new SparkMax(DriveConstants.RIGHT_MOTOR_CAN_ID + 1,
         MotorType.kBrushless);
 
-    private double                    leftSpeed          = 0;
-    private double                    rightSpeed         = 0;
+    private double                          leftSpeed          = 0;
+    private double                          rightSpeed         = 0;
 
     // Encoders
-    private final RelativeEncoder     leftEncoder        = leftPrimaryMotor.getEncoder();
-    private final RelativeEncoder     rightEncoder       = rightPrimaryMotor.getEncoder();
+    private final RelativeEncoder           leftEncoder        = leftPrimaryMotor.getEncoder();
+    private final RelativeEncoder           rightEncoder       = rightPrimaryMotor.getEncoder();
 
-    private double                    leftEncoderOffset  = 0;
-    private double                    rightEncoderOffset = 0;
+    private double                          leftEncoderOffset  = 0;
+    private double                          rightEncoderOffset = 0;
 
     /*
      * Gyro
      */
-    private NavXGyro                  navXGyro           = null;
+    private NavXGyro                        navXGyro           = null;
 
-    private double                    gyroHeadingOffset  = 0;
-    private double                    gyroPitchOffset    = 0;
+    private double                          gyroHeadingOffset  = 0;
+    private double                          gyroPitchOffset    = 0;
+
+    // odometry
+    private final DifferentialDriveOdometry odometry;
+
 
     /*
      * Simulation fields
      */
-    private Field2d                   field              = null;
-    private DifferentialDrivetrainSim drivetrainSim      = null;
-    private double                    simAngle           = 0;
-    private double                    simLeftEncoder     = 0;
-    private double                    simRightEncoder    = 0;
+    private Field2d                         field              = null;
+    private DifferentialDrivetrainSim       drivetrainSim      = null;
+    private double                          simAngle           = 0;
+    private double                          simLeftEncoder     = 0;
+    private double                          simRightEncoder    = 0;
 
     /** Creates a new DriveSubsystem. */
     public DriveSubsystem(LightsSubsystem lightsSubsystem) {
@@ -136,14 +145,25 @@ public class DriveSubsystem extends SubsystemBase {
             SmartDashboard.putData("Field", field);
 
             drivetrainSim = DifferentialDrivetrainSim.createKitbotSim(
-                KitbotMotor.kDoubleNEOPerSide, // Double NEO per side
-                KitbotGearing.k10p71, // 10.71:1
-                KitbotWheelSize.kSixInch, // 6" diameter wheels.
-                null // No measurement noise.
+                KitbotMotor.kDoubleNEOPerSide,                                                                                                 // Double
+                                                                                                                                               // NEO
+                                                                                                                                               // per
+                                                                                                                                               // side
+                KitbotGearing.k10p71,                                                                                                          // 10.71:1
+                KitbotWheelSize.kSixInch,                                                                                                      // 6"
+                                                                                                                                               // diameter
+                                                                                                                                               // wheels.
+                null                                                                                                                           // No
+                                                                                                                                               // measurement
+                                                                                                                                               // noise.
             );
+
+            odometry      = new DifferentialDriveOdometry(Rotation2d.fromDegrees(simAngle), simLeftEncoder / 100,
+                simRightEncoder / 100);
         }
         else {
             navXGyro = new NavXGyro();
+            odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(navXGyro.getAngle()), getLeftEncoder(), 0);
         }
     }
 
@@ -326,6 +346,14 @@ public class DriveSubsystem extends SubsystemBase {
         return rightEncoder.getPosition() + simRightEncoder + rightEncoderOffset;
     }
 
+    public Pose2d getPose() {
+        return odometry.getPoseMeters();
+    }
+
+    public void setPose(Pose2d pose) {
+        odometry.resetPose(pose);
+    }
+
     /** Resets the drive encoders to zero. */
     public void resetEncoders() {
 
@@ -414,6 +442,9 @@ public class DriveSubsystem extends SubsystemBase {
         // Update the encoders with the simulation offsets.
         simLeftEncoder  = drivetrainSim.getLeftPositionMeters() * 100 / DriveConstants.CM_PER_ENCODER_COUNT;
         simRightEncoder = drivetrainSim.getRightPositionMeters() * 100 / DriveConstants.CM_PER_ENCODER_COUNT;
+
+        odometry.update(Rotation2d.fromDegrees(simAngle), simLeftEncoder / 100, simRightEncoder / 100);
+        System.out.println(getPose().getX() + " " + getPose().getY());
     }
 
     @Override
