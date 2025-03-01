@@ -177,13 +177,15 @@ public class OperatorInput extends SubsystemBase {
     }
 
     public double isClimb() {
+        return 0;
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isClimb'");
+        // throw new UnsupportedOperationException("Unimplemented method 'isClimb'");
     }
 
     public double isRetract() {
+        return 0;
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isRetract'");
+        // throw new UnsupportedOperationException("Unimplemented method 'isRetract'");
     }
 
 }

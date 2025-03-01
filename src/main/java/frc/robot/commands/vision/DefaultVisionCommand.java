@@ -27,7 +27,7 @@ public class DefaultVisionCommand extends LoggingCommand {
 
 
         // Add required subsystems
-        addRequirements(driveSubsystem);
+        addRequirements(visionSubsystem, driveSubsystem);
     }
 
     // Called when the command is initially scheduled.
