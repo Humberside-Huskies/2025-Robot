@@ -1,6 +1,6 @@
 package frc.robot.commands.vision;
 
-import frc.robot.Constants.VisionConstants;
+import frc.robot.Constants.VisionConstant;
 import frc.robot.commands.LoggingCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
@@ -40,7 +40,7 @@ public class DefaultVisionCommand extends LoggingCommand {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if (visionSubsystem.getAmbiguity() < VisionConstants.AMBIGUITY_THRESHOLD_MEGATAG)
+        if (visionSubsystem.getAmbiguity() < VisionConstant.AMBIGUITY_THRESHOLD_MEGATAG)
             return;
 
         driveSubsystem.setPose(visionSubsystem.getBotPose());

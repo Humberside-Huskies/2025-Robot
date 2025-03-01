@@ -3,6 +3,8 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot;
 
+import com.pathplanner.lib.config.RobotConfig;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose.
@@ -27,8 +29,11 @@ public final class Constants {
     public static final class AutoConstants {
 
         public static enum AutoPattern {
-            DO_NOTHING, DRIVE_FORWARD, BOX, PATH_TEST_THING
+            DO_NOTHING, DRIVE_FORWARD, BOX, PATH_TEST_THING, MY_CASE;
+
         }
+
+        public static RobotConfig config;
     }
 
     public static final class DriveConstants {
@@ -68,7 +73,23 @@ public final class Constants {
         public static final double ELEVATOR_RETRACT_SPEED = -.5;
     }
 
-    public static final class VisionConstants {
-        public static final int AMBIGUITY_THRESHOLD_MEGATAG = 0;
+    public static final class CoralConstant {
+        public static final double CORAL_MOTOR_INTAKE_SPEED  = .5;
+        public static final double CORAL_MOTOR_OUTTAKE_SPEED = .5;
+        public static final int    RIGHT_CORAL_MOTOR_CAN_ID  = 12;
+        public static final int    LEFT_CORAL_MOTOR_CAN_ID   = 10;
+
+    }
+
+    public static final class VisionConstant {
+        public static final double AMBIGUITY_THRESHOLD_MEGATAG = 0;
+        public static final double mountedAngleDegrees         = 18.0;
+        public static final double mountedHeightMeters         = 0.160655;
+
+        // distance from the target to the floor
+        public static final double StationHeightMeters         = 1.49;
+        public static final double ReefHeightMeters            = 0.308;
+        public static final double ProcessorHeightMeters       = 1.301;
+        public static final double BargeHeightMeters           = 1.868;
     }
 }

@@ -1,10 +1,7 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.commands.vision;
 
 import edu.wpi.first.math.controller.PIDController;
+import frc.robot.Constants.VisionConstant;
 import frc.robot.commands.LoggingCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
@@ -12,15 +9,17 @@ import frc.robot.subsystems.VisionSubsystem;
 
 public class AlignToAprilTagCommand extends LoggingCommand {
 
-
     // the target id of the apriltag
-    private final int             targetID;
+    private double              targetID    = 0.0;
 
-    private final DriveSubsystem  driveSubsystem;
-    private final VisionSubsystem visionSubsystem;
+    private DriveSubsystem      driveSubsystem;
+    private VisionSubsystem     visionSubsystem;
 
-    private final double          targetX     = 0;
-    private final PIDController   controllerX = new PIDController(0.03, 0, 0);
+    private final double        targetX     = 0;
+    private double              targetD     = .5;
+    private final PIDController controllerX = new PIDController(0.01, 0, 0);
+    private final PIDController controllerD = new PIDController(.01, 0, 0);
+
 
     /**
      * DriveForTime command drives at the specified heading at the specified speed for the specified
@@ -30,11 +29,12 @@ public class AlignToAprilTagCommand extends LoggingCommand {
      * @param driveSubsystem
      */
 
-    public AlignToAprilTagCommand(int targetID, DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
+    public AlignToAprilTagCommand(DriveSubsystem driveSubsystem,
+        VisionSubsystem visionSubsystem) {
 
-        this.targetID        = targetID;
         this.visionSubsystem = visionSubsystem;
         this.driveSubsystem  = driveSubsystem;
+
 
         // Add required subsystems
         addRequirements(driveSubsystem);
@@ -48,10 +48,13 @@ public class AlignToAprilTagCommand extends LoggingCommand {
         logCommandStart();
     }
 
+
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
         double tx = visionSubsystem.getTX();
+        targetID = visionSubsystem.getTID();
+        double ty = visionSubsystem.getTY();
 
         if (visionSubsystem.getTV() == 0) {
             System.out.println("NO TARGETS FOUND");
@@ -60,18 +63,126 @@ public class AlignToAprilTagCommand extends LoggingCommand {
         }
 
 
-        double turn = controllerX.calculate(tx, targetX);
 
-        // Apply constraints to prevent excessive speed
-        turn = Math.max(-0.5, Math.min(turn, 0.5)); // Clamp turn speed
+        double turn    = controllerX.calculate(-tx, targetX);
 
-        // setArcadeDriveMotorSpeeds(0, turn, 1);
+        double forward = controllerD.calculate(distanceCalculator(ty, targetID), targetD);
+
+        // Apply constraints to prevent excessive speed turn = Math.max(-0.5, Math.min(turn, 0.5)); // Clamp turn speed
+
+        setArcadeDriveMotorSpeeds(forward, turn, .5);
+
     }
 
-    // Called once the command ends or is interrupted.
-    @Override
-    public void end(boolean interrupted) {
+    private double findGoalHeightMeter(double targetID) {
+        int    ID               = (int) targetID;
+        double goalHeightMeters = 0;
 
+        switch (ID) {
+        case 22:
+            goalHeightMeters = VisionConstant.ReefHeightMeters;
+            break;
+        case 21:
+            goalHeightMeters = VisionConstant.ReefHeightMeters;
+            break;
+        case 19:
+            goalHeightMeters = VisionConstant.ReefHeightMeters;
+            break;
+        case 18:
+            goalHeightMeters = VisionConstant.ReefHeightMeters;
+            break;
+        case 17:
+            goalHeightMeters = VisionConstant.ReefHeightMeters;
+            break;
+        case 16:
+            goalHeightMeters = VisionConstant.ProcessorHeightMeters;
+            break;
+        case 15:
+            goalHeightMeters = VisionConstant.BargeHeightMeters;
+            break;
+        case 14:
+            goalHeightMeters = VisionConstant.BargeHeightMeters;
+            break;
+        case 13:
+            goalHeightMeters = VisionConstant.StationHeightMeters;
+            break;
+        case 12:
+            goalHeightMeters = VisionConstant.StationHeightMeters;
+            break;
+        case 11:
+            goalHeightMeters = VisionConstant.ReefHeightMeters;
+            break;
+        case 10:
+            goalHeightMeters = VisionConstant.ReefHeightMeters;
+            break;
+        case 9:
+            goalHeightMeters = VisionConstant.ReefHeightMeters;
+            break;
+        case 8:
+            goalHeightMeters = VisionConstant.ReefHeightMeters;
+            break;
+        case 7:
+            goalHeightMeters = VisionConstant.ReefHeightMeters;
+            break;
+        case 6:
+            goalHeightMeters = VisionConstant.ReefHeightMeters;
+            break;
+        case 5:
+            goalHeightMeters = VisionConstant.BargeHeightMeters;
+            break;
+        case 4:
+            goalHeightMeters = VisionConstant.BargeHeightMeters;
+            break;
+        case 3:
+            goalHeightMeters = VisionConstant.ProcessorHeightMeters;
+            break;
+        case 2:
+            goalHeightMeters = VisionConstant.StationHeightMeters;
+            break;
+        case 1:
+            goalHeightMeters = VisionConstant.StationHeightMeters;
+            break;
+
+        default:
+            break;
+        }
+
+        return goalHeightMeters;
+    }
+
+    private double distanceCalculator(double ty, double ID) {
+
+        double targetOffsetAngle_Vertical = ty;
+
+        // distance from the target to the floor
+        double goalHeightMeters           = findGoalHeightMeter(ID);
+
+
+        double angleToGoalDegrees         = VisionConstant.mountedAngleDegrees + targetOffsetAngle_Vertical;
+
+        // calculate distance
+        double distanceFromGoal           = (goalHeightMeters - VisionConstant.mountedHeightMeters)
+            / Math.tan(angleToGoalDegrees);
+
+        return distanceFromGoal;
+    }
+
+    private void setArcadeDriveMotorSpeeds(double speed, double turn, double driveScalingFactor) {
+
+        // Cut the spin in half because it will be applied to both sides.
+        // Spinning at 1.0, should apply 0.5 to each side.
+        turn = turn / 2.0;
+
+        // Keep the turn, and reduce the forward speed where required to have the
+        // maximum turn.
+        if (Math.abs(speed) + Math.abs(turn) > 1.0) {
+            speed = (1.0 - Math.abs(turn)) * Math.signum(speed);
+        }
+
+        double leftSpeed  = (speed + turn) * driveScalingFactor;
+        double rightSpeed = (speed - turn) * driveScalingFactor;
+
+        driveSubsystem.setMotorSpeeds(leftSpeed, rightSpeed);
     }
 
     // Returns true when the command should end.
@@ -84,6 +195,21 @@ public class AlignToAprilTagCommand extends LoggingCommand {
             setFinishReason("Timed out");
             return true;
         }
+
         return false;
+
+        // Ivan was here
+
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+
+        logCommandEnd(interrupted);
+
+        // Stop the robot if required
+        if (true) {
+            driveSubsystem.setMotorSpeeds(0, 0);
+        }
     }
 }
