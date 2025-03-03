@@ -57,7 +57,7 @@ public final class Constants {
         public static final double  GYRO_PID_KP          = 0.01;
 
         public static final double  DRIVE_SCALING_BOOST  = 1;
-        public static final double  DRIVE_SCALING_NORMAL = .6;
+        public static final double  DRIVE_SCALING_NORMAL = .3;
         public static final double  DRIVE_SCALING_SLOW   = .3;
     }
 
@@ -68,7 +68,7 @@ public final class Constants {
     }
 
     public static final class ElevatorConstant {
-        public static final int    ELEVATOR_MOTOR_CAN_ID  = 0;
+        public static final int    ELEVATOR_MOTOR_CAN_ID  = 30;
         public static final double ELEVATOR_CLIMB_SPEED   = .5;
         public static final double ELEVATOR_RETRACT_SPEED = -.5;
     }
