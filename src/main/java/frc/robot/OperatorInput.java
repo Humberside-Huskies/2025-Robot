@@ -12,7 +12,9 @@ import frc.robot.Constants.OperatorInputConstants;
 import frc.robot.commands.CancelCommand;
 import frc.robot.commands.GameController;
 import frc.robot.commands.drive.DriveOnHeadingCommand;
+import frc.robot.commands.vision.AlignToAprilTagCommand;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 /**
  * The DriverController exposes all driver functions
@@ -66,7 +68,7 @@ public class OperatorInput extends SubsystemBase {
      *
      * @param driveSubsystem
      */
-    public void configureButtonBindings(DriveSubsystem driveSubsystem) {
+    public void configureButtonBindings(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
 
         // Cancel Command - cancels all running commands on all subsystems
         new Trigger(() -> isCancel())
@@ -91,6 +93,9 @@ public class OperatorInput extends SubsystemBase {
 
         new Trigger(() -> driverController.getPOV() == 270)
             .onTrue(new DriveOnHeadingCommand(270, .5, 100, driveSubsystem));
+
+        new Trigger(() -> driveToAprilTag())
+            .onTrue(new AlignToAprilTagCommand(driveSubsystem, visionSubsystem));
     }
 
     /*
@@ -168,6 +173,10 @@ public class OperatorInput extends SubsystemBase {
 
     public void stopVibrate() {
         driverController.setRumble(GenericHID.RumbleType.kBothRumble, 0);
+    }
+
+    public boolean driveToAprilTag() {
+        return driverController.getAButton();
     }
 
 

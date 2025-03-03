@@ -71,6 +71,7 @@ public final class Constants {
         public static final int    ELEVATOR_MOTOR_CAN_ID  = 30;
         public static final double ELEVATOR_CLIMB_SPEED   = .5;
         public static final double ELEVATOR_RETRACT_SPEED = -.5;
+        
     }
 
     public static final class CoralConstant {

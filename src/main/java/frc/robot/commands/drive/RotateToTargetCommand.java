@@ -10,7 +10,7 @@ public class RotateToTargetCommand extends LoggingCommand {
     private final double         targetX;
     private final double         targetY;
 
-    private final PIDController  headingController = new PIDController(0.1, 0, 0);
+    private final PIDController  headingController = new PIDController(0.01, 0, 0);
 
     private double               angleToTarget;
 

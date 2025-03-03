@@ -70,7 +70,7 @@ public class AlignToAprilTagCommand extends LoggingCommand {
 
         // Apply constraints to prevent excessive speed turn = Math.max(-0.5, Math.min(turn, 0.5)); // Clamp turn speed
 
-        setArcadeDriveMotorSpeeds(forward, turn, .5);
+        setArcadeDriveMotorSpeeds(forward, turn, .7);
 
     }
 

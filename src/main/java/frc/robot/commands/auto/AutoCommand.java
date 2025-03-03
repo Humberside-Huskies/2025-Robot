@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.AutoConstants.AutoPattern;
 import frc.robot.OperatorInput;
 import frc.robot.commands.drive.DriveOnHeadingCommand;
-import frc.robot.commands.drive.DriveToTargetCommand;
 import frc.robot.commands.drive.RotateToTargetCommand;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -78,7 +77,7 @@ public class AutoCommand extends SequentialCommandGroup {
                 double targetY = targets[i][1];
 
                 addCommands(new RotateToTargetCommand(targetX, targetY, driveSubsystem));
-                addCommands(new DriveToTargetCommand(targetX, targetY, driveSubsystem));
+                // addCommands(new DriveToTargetCommand(targetX, targetY, driveSubsystem));
             }
             return;
 

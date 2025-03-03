@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.Arrays;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -61,6 +63,8 @@ public class VisionSubsystem extends SubsystemBase {
 
         botPose   = limelightTable.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
         ambiguity = limelightTable.getEntry("rawFiducials").getDoubleArray(new double[7])[6];
+        System.out.println(Arrays.toString(limelightTable.getEntry("rawFiducials").getDoubleArray(new double[8])));
+
         // System.out.println(getBotPose().getX() + ", " + getBotPose().getY());
 
     }

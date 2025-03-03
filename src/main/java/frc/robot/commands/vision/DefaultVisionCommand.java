@@ -27,7 +27,7 @@ public class DefaultVisionCommand extends LoggingCommand {
 
 
         // Add required subsystems
-        addRequirements(visionSubsystem, driveSubsystem);
+        addRequirements(visionSubsystem);
     }
 
     // Called when the command is initially scheduled.
@@ -40,8 +40,12 @@ public class DefaultVisionCommand extends LoggingCommand {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if (visionSubsystem.getAmbiguity() < VisionConstant.AMBIGUITY_THRESHOLD_MEGATAG)
+        if (visionSubsystem.getAmbiguity() > VisionConstant.AMBIGUITY_THRESHOLD_MEGATAG) {
+            System.out.println("Using Encoders");
             return;
+        }
+
+        System.out.println(visionSubsystem.getAmbiguity() + "<balls");
 
         driveSubsystem.setPose(visionSubsystem.getBotPose());
     }
