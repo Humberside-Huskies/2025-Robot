@@ -45,7 +45,7 @@ public class DefaultVisionCommand extends LoggingCommand {
             return;
         }
 
-        System.out.println(visionSubsystem.getAmbiguity() + "<balls");
+        System.out.println(visionSubsystem.getAmbiguity());
 
         driveSubsystem.setPose(visionSubsystem.getBotPose());
     }

@@ -64,6 +64,7 @@ public class VisionSubsystem extends SubsystemBase {
         botPose   = limelightTable.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
         ambiguity = limelightTable.getEntry("rawFiducials").getDoubleArray(new double[7])[6];
         System.out.println(Arrays.toString(limelightTable.getEntry("rawFiducials").getDoubleArray(new double[8])));
+        System.out.println(Arrays.toString(limelightTable.getKeys().toArray()));
 
         // System.out.println(getBotPose().getX() + ", " + getBotPose().getY());
 
@@ -74,6 +75,6 @@ public class VisionSubsystem extends SubsystemBase {
         // Create an appropriate text readable string describing the state of the
         // subsystem
 
-        return "Vlad created the file, tony did nothing";
+        return "Vlad created the file, tony is gay";
     }
 }
