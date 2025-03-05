@@ -59,7 +59,7 @@ public class DefaultDriveCommand extends LoggingCommand {
         }
         else {
 
-            double speed = operatorInput.getSpeed();
+            double speed = -operatorInput.getSpeed();
             double turn  = operatorInput.getTurn();
 
             setArcadeDriveMotorSpeeds(speed, turn, driveScalingFactor);
@@ -88,7 +88,7 @@ public class DefaultDriveCommand extends LoggingCommand {
      */
     private void setTankDriveMotorSpeeds(double leftSpeed, double rightSpeed, double driveScalingFactor) {
 
-        double speed = (leftSpeed + rightSpeed) / 2.0;
+        double speed = -(leftSpeed + rightSpeed) / 2.0;
         double turn  = (leftSpeed - rightSpeed) / 2.0;
 
         setArcadeDriveMotorSpeeds(speed, turn, driveScalingFactor);

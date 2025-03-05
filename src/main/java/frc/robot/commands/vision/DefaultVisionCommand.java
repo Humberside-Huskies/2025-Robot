@@ -40,14 +40,15 @@ public class DefaultVisionCommand extends LoggingCommand {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
+        System.out.println(driveSubsystem.getPose());
+
         if (visionSubsystem.getAmbiguity() > VisionConstant.AMBIGUITY_THRESHOLD_MEGATAG) {
             System.out.println("Using Encoders");
+            driveSubsystem.setPose(visionSubsystem.getBotPose());
             return;
         }
 
-        System.out.println(visionSubsystem.getAmbiguity());
-
-        driveSubsystem.setPose(visionSubsystem.getBotPose());
+        driveSubsystem.updateOdometry();
     }
 
     // Returns true when the command should end.

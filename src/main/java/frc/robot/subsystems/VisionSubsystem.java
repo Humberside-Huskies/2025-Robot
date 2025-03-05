@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import java.util.Arrays;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -12,8 +10,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class VisionSubsystem extends SubsystemBase {
 
     private NetworkTable limelightTable;
-    private double       tv, ty, tx, ta, tid, ambiguity;
+    private double       tv, ty, tx, ta, tid;
     private double[]     botPose;
+
+    private double[]     rawfiducials;
 
     public VisionSubsystem(LightsSubsystem lightsSubsystem) {
         limelightTable = NetworkTableInstance.getDefault().getTable("limelight");
@@ -45,7 +45,9 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     public double getAmbiguity() {
-        return ambiguity;
+        if (rawfiducials.length == 0)
+            return 0;
+        return rawfiducials[6];
     }
 
 
@@ -56,17 +58,19 @@ public class VisionSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
-        tv        = limelightTable.getEntry("tv").getDouble(0);
-        tx        = limelightTable.getEntry("tx").getDouble(0);
-        ty        = limelightTable.getEntry("ty").getDouble(0);
-        ta        = limelightTable.getEntry("ta").getDouble(0);
+        tv           = limelightTable.getEntry("tv").getDouble(0);
+        tx           = limelightTable.getEntry("tx").getDouble(0);
+        ty           = limelightTable.getEntry("ty").getDouble(0);
+        ta           = limelightTable.getEntry("ta").getDouble(0);
 
-        botPose   = limelightTable.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
-        ambiguity = limelightTable.getEntry("rawFiducials").getDoubleArray(new double[7])[6];
-        System.out.println(Arrays.toString(limelightTable.getEntry("rawFiducials").getDoubleArray(new double[8])));
-        System.out.println(Arrays.toString(limelightTable.getKeys().toArray()));
+        botPose      = limelightTable.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
+        rawfiducials = limelightTable.getEntry("rawfiducials").getDoubleArray(new double[7]);
 
-        // System.out.println(getBotPose().getX() + ", " + getBotPose().getY());
+        // System.out.println(Arrays.toString(limelightTable.getEntry("rawfiducials").getDoubleArray(new double[7])));
+        // System.out.println("botpose_wpi: " + Arrays.toString(
+        // limelightTable.getEntry("botpose_wpi").getDoubleArray(new double[6])));
+        // System.out.println("AprilTag ID (tid): " + limelightTable.getEntry("tid").getDouble(-1));
+
 
     }
 

@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.controllers.PPLTVController;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -11,8 +13,10 @@ import com.studica.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
@@ -22,6 +26,7 @@ import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotWheelSiz
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -145,17 +150,17 @@ public class DriveSubsystem extends SubsystemBase {
             SmartDashboard.putData("Field", field);
 
             drivetrainSim = DifferentialDrivetrainSim.createKitbotSim(
-                KitbotMotor.kDoubleNEOPerSide,                                                                                                 // Double
-                                                                                                                                               // NEO
-                                                                                                                                               // per
-                                                                                                                                               // side
-                KitbotGearing.k10p71,                                                                                                          // 10.71:1
-                KitbotWheelSize.kSixInch,                                                                                                      // 6"
-                                                                                                                                               // diameter
-                                                                                                                                               // wheels.
-                null                                                                                                                           // No
-                                                                                                                                               // measurement
-                                                                                                                                               // noise.
+                KitbotMotor.kDoubleNEOPerSide,                                                                   // Double
+                // NEO
+                // per
+                // side
+                KitbotGearing.k10p71,                                                                            // 10.71:1
+                KitbotWheelSize.kSixInch,                                                                        // 6"
+                // diameter
+                // wheels.
+                null                                                                                             // No
+            // measurement
+            // noise.
             );
 
             odometry      = new DifferentialDriveOdometry(Rotation2d.fromDegrees(simAngle), simLeftEncoder / 100,
@@ -165,7 +170,75 @@ public class DriveSubsystem extends SubsystemBase {
             navXGyro = new NavXGyro();
             odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(navXGyro.getAngle()), getLeftEncoder(), 0);
         }
+
+
+        setupPathPlanner();
     }
+
+    public void setupPathPlanner() {
+        // Configure AutoBuilder last
+        AutoBuilder.configure(
+            this::getPose, // Robot pose supplier
+            this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+            this::getWheelSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+            (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE
+                                                                  // ChassisSpeeds. Also optionally outputs individual module
+                                                                  // feedforwards
+            new PPLTVController(0.02), // PPLTVController is the built in path following controller for differential drive trains
+            AutoConstants.config, // The robot configuration
+            () -> {
+                // Boolean supplier that controls when the path will be mirrored for the red alliance
+                // This will flip the path being followed to the red side of the field.
+                // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+                var alliance = DriverStation.getAlliance();
+                if (alliance.isPresent()) {
+                    return alliance.get() == DriverStation.Alliance.Red;
+                }
+                return false;
+            },
+            this // Reference to this subsystem to set requirements
+        );
+    }
+
+    public void resetOdometry(Pose2d pose) {
+        resetEncoders();
+        odometry.resetPosition(navXGyro.getRotation2d(), getLeftEncoder(), getRightEncoder(), pose);
+        resetGyro();
+    }
+
+    public ChassisSpeeds getWheelSpeeds() {
+        // Get the current left and right wheel speeds (in meters per second)
+        double leftSpeed  = getLeftEncoderSpeed();                                // Left wheel speed (m/s)
+        double rightSpeed = getRightEncoderSpeed();                               // Right wheel speed (m/s)
+
+        // Calculate robot-relative forward velocity (average of left and right speeds)
+        double vx         = (leftSpeed + rightSpeed) / 2;
+
+        // Calculate robot-relative rotational velocity (difference of left and right speeds)
+        double omega      = (rightSpeed - leftSpeed) / DriveConstants.ROBOT_WIDTH;
+
+        // Return the chassis speeds (in meters per second and radians per second)
+        return new ChassisSpeeds(vx, 0, omega); // Assuming no lateral speed (vy = 0)
+    }
+
+    public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
+        // Get the robot-relative velocities from the chassisSpeeds
+        double xSpeed     = chassisSpeeds.vxMetersPerSecond;                   // Forward velocity (m/s)
+        double ySpeed     = chassisSpeeds.vyMetersPerSecond;                   // Sideways velocity (m/s)
+        double rotSpeed   = chassisSpeeds.omegaRadiansPerSecond;               // Rotational velocity (rad/s)
+
+        // Convert the robot-relative velocities into wheel speeds using your drive kinematics
+        // You'll need to write the math for converting these velocities to individual left/right motor speeds.
+        // This could involve simple trigonometry based on the robot's geometry.
+
+        double leftSpeed  = xSpeed - rotSpeed * DriveConstants.ROBOT_WIDTH / 2;
+        double rightSpeed = xSpeed + rotSpeed * DriveConstants.ROBOT_WIDTH / 2;
+
+        // Set the speeds for the motors
+        setMotorSpeeds(leftSpeed, rightSpeed);
+    }
+
 
     /**
      * Reset Gyro
@@ -352,6 +425,10 @@ public class DriveSubsystem extends SubsystemBase {
 
     public void setPose(Pose2d pose) {
         odometry.resetPose(pose);
+    }
+
+    public void updateOdometry() {
+        odometry.update(Rotation2d.fromDegrees(getHeading()), getLeftEncoder(), getRightEncoder());
     }
 
     /** Resets the drive encoders to zero. */

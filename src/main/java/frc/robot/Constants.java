@@ -57,8 +57,10 @@ public final class Constants {
         public static final double  GYRO_PID_KP          = 0.01;
 
         public static final double  DRIVE_SCALING_BOOST  = 1;
-        public static final double  DRIVE_SCALING_NORMAL = .3;
+        public static final double  DRIVE_SCALING_NORMAL = .2;
         public static final double  DRIVE_SCALING_SLOW   = .3;
+
+        public static final double  ROBOT_WIDTH          = .6;
     }
 
     public static final class LightsConstants {
@@ -71,7 +73,7 @@ public final class Constants {
         public static final int    ELEVATOR_MOTOR_CAN_ID  = 30;
         public static final double ELEVATOR_CLIMB_SPEED   = .5;
         public static final double ELEVATOR_RETRACT_SPEED = -.5;
-        
+
     }
 
     public static final class CoralConstant {
@@ -83,7 +85,7 @@ public final class Constants {
     }
 
     public static final class VisionConstant {
-        public static final double AMBIGUITY_THRESHOLD_MEGATAG = 0;
+        public static final double AMBIGUITY_THRESHOLD_MEGATAG = 0.3;
         public static final double mountedAngleDegrees         = 18.0;
         public static final double mountedHeightMeters         = 0.160655;
 
