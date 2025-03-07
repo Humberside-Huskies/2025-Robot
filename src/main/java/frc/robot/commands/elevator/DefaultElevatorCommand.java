@@ -1,6 +1,6 @@
 package frc.robot.commands.elevator;
 
-import frc.robot.Constants.ElevatorConstant;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.OperatorInput;
 import frc.robot.commands.LoggingCommand;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -11,7 +11,6 @@ public class DefaultElevatorCommand extends LoggingCommand {
     private ElevatorSubsystem elevatorSubsystem;
     private OperatorInput     operatorInput;
     private LightsSubsystem   lightsSubsystem;
-    private boolean           climberRaised = false;
 
     /**
      * Creates a new ExampleCommand.
@@ -32,28 +31,26 @@ public class DefaultElevatorCommand extends LoggingCommand {
     @Override
     public void initialize() {
         logCommandStart();
-        elevatorSubsystem.resetElevatorEncoders();
+        elevatorSubsystem.resetPrimaryEncoders();
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
+        double elevatorJoystick = operatorInput.isElevatorJoystick();
 
-        if (operatorInput.isClimb() > 0.4 && !(operatorInput.isRetract() > 0.4)) {
-
-            elevatorSubsystem.setMotorSpeeds(ElevatorConstant.ELEVATOR_CLIMB_SPEED);
-        }
-        else if (operatorInput.isRetract() > 0.4 && !(operatorInput.isClimb() > 0.4)) {
-            elevatorSubsystem.setMotorSpeeds(ElevatorConstant.ELEVATOR_RETRACT_SPEED);
-        }
-        else {
-
+        if (elevatorJoystick == 0) {
             elevatorSubsystem.stop();
         }
-
-
+        // Climbing
+        else if (elevatorJoystick > 0) {
+            elevatorSubsystem.setMotorSpeeds(ElevatorConstants.ELEVATOR_CONTRACT_SPEED * Math.abs(elevatorJoystick));
+        }
+        // Retracting
+        else if (elevatorJoystick < 0) {
+            elevatorSubsystem.setMotorSpeeds(ElevatorConstants.ELEVATOR_RETRACT_SPEED * Math.abs(elevatorJoystick));
+        }
     }
-
 
 
     // Returns true when the command should end.

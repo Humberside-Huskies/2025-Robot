@@ -3,17 +3,20 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants.AutoPattern;
+import frc.robot.Constants.CoralConstants;
 import frc.robot.Constants.DriveConstants.DriveMode;
 import frc.robot.Constants.OperatorInputConstants;
 import frc.robot.commands.CancelCommand;
 import frc.robot.commands.GameController;
-import frc.robot.commands.drive.DriveOnHeadingCommand;
+import frc.robot.commands.coral.CoralCommand;
+import frc.robot.commands.elevator.SetElevatorLevelCommand;
 import frc.robot.commands.vision.AlignToAprilTagCommand;
+import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 /**
@@ -24,6 +27,7 @@ import frc.robot.subsystems.VisionSubsystem;
 public class OperatorInput extends SubsystemBase {
 
     private final GameController driverController;
+    private final GameController operatorController;
 
     // Auto Setup Choosers
     SendableChooser<AutoPattern> autoPatternChooser = new SendableChooser<>();
@@ -36,8 +40,10 @@ public class OperatorInput extends SubsystemBase {
      */
     public OperatorInput() {
 
-        driverController = new GameController(OperatorInputConstants.DRIVER_CONTROLLER_PORT,
+        driverController   = new GameController(OperatorInputConstants.DRIVER_CONTROLLER_PORT,
             OperatorInputConstants.DRIVER_CONTROLLER_DEADBAND);
+        operatorController = new GameController(OperatorInputConstants.OPERATOR_CONTROLLER_PORT,
+            OperatorInputConstants.OPERATOR_CONTROLLER_DEADBAND);
 
         // Initialize the dashboard selectors
         autoPatternChooser.setDefaultOption("Do Nothing", AutoPattern.DO_NOTHING);
@@ -68,34 +74,38 @@ public class OperatorInput extends SubsystemBase {
      *
      * @param driveSubsystem
      */
-    public void configureButtonBindings(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
+    public void configureButtonBindings(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem,
+        ElevatorSubsystem elevatorSubsystem, CoralSubsystem coralSubsystem) {
 
         // Cancel Command - cancels all running commands on all subsystems
         new Trigger(() -> isCancel())
             .onTrue(new CancelCommand(this, driveSubsystem));
 
-        // Gyro and Encoder Reset
-        new Trigger(() -> driverController.getBackButton())
-            .onTrue(new InstantCommand(() -> {
-                driveSubsystem.resetGyro();
-                driveSubsystem.resetEncoders();
-            }));
-
-        // Configure the DPAD to drive one meter on a heading
-        new Trigger(() -> driverController.getPOV() == 0)
-            .onTrue(new DriveOnHeadingCommand(0, .5, 100, driveSubsystem));
-
-        new Trigger(() -> driverController.getPOV() == 90)
-            .onTrue(new DriveOnHeadingCommand(90, .5, 100, driveSubsystem));
-
-        new Trigger(() -> driverController.getPOV() == 180)
-            .onTrue(new DriveOnHeadingCommand(180, .5, 100, driveSubsystem));
-
-        new Trigger(() -> driverController.getPOV() == 270)
-            .onTrue(new DriveOnHeadingCommand(270, .5, 100, driveSubsystem));
-
         new Trigger(() -> driveToAprilTag())
             .onTrue(new AlignToAprilTagCommand(driveSubsystem, visionSubsystem));
+
+        // Coral Shooter
+        new Trigger(() -> isIntake())
+            .onTrue(new CoralCommand(coralSubsystem, true));
+
+        new Trigger(() -> isOutTake())
+            .onTrue(new CoralCommand(coralSubsystem, false));
+
+
+
+        // Elevator Level setter
+        // Configure the DPAD to drive one meter on a heading
+        new Trigger(() -> operatorController.getBButton())
+            .onTrue(new SetElevatorLevelCommand(CoralConstants.CORAL_HEIGHT_LEVEL_1_CM, elevatorSubsystem));
+
+        new Trigger(() -> operatorController.getAButton())
+            .onTrue(new SetElevatorLevelCommand(CoralConstants.CORAL_HEIGHT_LEVEL_2_CM, elevatorSubsystem));
+
+        new Trigger(() -> operatorController.getXButton())
+            .onTrue(new SetElevatorLevelCommand(CoralConstants.CORAL_HEIGHT_LEVEL_3_CM, elevatorSubsystem));
+
+        new Trigger(() -> operatorController.getYButton())
+            .onTrue(new SetElevatorLevelCommand(CoralConstants.CORAL_HEIGHT_LEVEL_4_CM, elevatorSubsystem));
     }
 
     /*
@@ -164,6 +174,14 @@ public class OperatorInput extends SubsystemBase {
         return driverController.getRightX();
     }
 
+    public boolean isIntake() {
+        return operatorController.getAButton();
+    }
+
+    public boolean isOutTake() {
+        return operatorController.getBButton();
+    }
+
     /*
      * Support for haptic feedback to the driver
      */
@@ -185,16 +203,40 @@ public class OperatorInput extends SubsystemBase {
         SmartDashboard.putString("Driver Controller", driverController.toString());
     }
 
-    public double isClimb() {
-        return 0;
-        // TODO Auto-generated method stub
-        // throw new UnsupportedOperationException("Unimplemented method 'isClimb'");
+    public double isElevatorJoystick() {
+        double value = operatorController.getLeftY();
+
+        if (Math.abs(value) < 0.2)
+            return 0;
+        return value;
     }
 
-    public double isRetract() {
-        return 0;
-        // TODO Auto-generated method stub
-        // throw new UnsupportedOperationException("Unimplemented method 'isRetract'");
+    public double isElevatorRetract() {
+        double value = operatorController.getRightTriggerAxis();
+
+        if (value < 0.4)
+            return 0;
+        return value;
     }
+
+    public boolean isResetEncoders() {
+        return driverController.getBackButton();
+    }
+
+    /*
+     * Is Climber Trigger Button
+     */
+    public double isClimb() {
+        return driverController.getLeftTriggerAxis();
+    }
+
+    // cool function buddy climbing things
+    public double isRetract() {
+        return driverController.getRightTriggerAxis();
+    }
+
+
+
+    // public boolean
 
 }

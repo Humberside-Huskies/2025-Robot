@@ -1,7 +1,7 @@
 package frc.robot.commands.vision;
 
 import edu.wpi.first.math.controller.PIDController;
-import frc.robot.Constants.VisionConstant;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.LoggingCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
@@ -80,67 +80,67 @@ public class AlignToAprilTagCommand extends LoggingCommand {
 
         switch (ID) {
         case 22:
-            goalHeightMeters = VisionConstant.ReefHeightMeters;
+            goalHeightMeters = VisionConstants.ReefHeightMeters;
             break;
         case 21:
-            goalHeightMeters = VisionConstant.ReefHeightMeters;
+            goalHeightMeters = VisionConstants.ReefHeightMeters;
             break;
         case 19:
-            goalHeightMeters = VisionConstant.ReefHeightMeters;
+            goalHeightMeters = VisionConstants.ReefHeightMeters;
             break;
         case 18:
-            goalHeightMeters = VisionConstant.ReefHeightMeters;
+            goalHeightMeters = VisionConstants.ReefHeightMeters;
             break;
         case 17:
-            goalHeightMeters = VisionConstant.ReefHeightMeters;
+            goalHeightMeters = VisionConstants.ReefHeightMeters;
             break;
         case 16:
-            goalHeightMeters = VisionConstant.ProcessorHeightMeters;
+            goalHeightMeters = VisionConstants.ProcessorHeightMeters;
             break;
         case 15:
-            goalHeightMeters = VisionConstant.BargeHeightMeters;
+            goalHeightMeters = VisionConstants.BargeHeightMeters;
             break;
         case 14:
-            goalHeightMeters = VisionConstant.BargeHeightMeters;
+            goalHeightMeters = VisionConstants.BargeHeightMeters;
             break;
         case 13:
-            goalHeightMeters = VisionConstant.StationHeightMeters;
+            goalHeightMeters = VisionConstants.StationHeightMeters;
             break;
         case 12:
-            goalHeightMeters = VisionConstant.StationHeightMeters;
+            goalHeightMeters = VisionConstants.StationHeightMeters;
             break;
         case 11:
-            goalHeightMeters = VisionConstant.ReefHeightMeters;
+            goalHeightMeters = VisionConstants.ReefHeightMeters;
             break;
         case 10:
-            goalHeightMeters = VisionConstant.ReefHeightMeters;
+            goalHeightMeters = VisionConstants.ReefHeightMeters;
             break;
         case 9:
-            goalHeightMeters = VisionConstant.ReefHeightMeters;
+            goalHeightMeters = VisionConstants.ReefHeightMeters;
             break;
         case 8:
-            goalHeightMeters = VisionConstant.ReefHeightMeters;
+            goalHeightMeters = VisionConstants.ReefHeightMeters;
             break;
         case 7:
-            goalHeightMeters = VisionConstant.ReefHeightMeters;
+            goalHeightMeters = VisionConstants.ReefHeightMeters;
             break;
         case 6:
-            goalHeightMeters = VisionConstant.ReefHeightMeters;
+            goalHeightMeters = VisionConstants.ReefHeightMeters;
             break;
         case 5:
-            goalHeightMeters = VisionConstant.BargeHeightMeters;
+            goalHeightMeters = VisionConstants.BargeHeightMeters;
             break;
         case 4:
-            goalHeightMeters = VisionConstant.BargeHeightMeters;
+            goalHeightMeters = VisionConstants.BargeHeightMeters;
             break;
         case 3:
-            goalHeightMeters = VisionConstant.ProcessorHeightMeters;
+            goalHeightMeters = VisionConstants.ProcessorHeightMeters;
             break;
         case 2:
-            goalHeightMeters = VisionConstant.StationHeightMeters;
+            goalHeightMeters = VisionConstants.StationHeightMeters;
             break;
         case 1:
-            goalHeightMeters = VisionConstant.StationHeightMeters;
+            goalHeightMeters = VisionConstants.StationHeightMeters;
             break;
 
         default:
@@ -158,10 +158,10 @@ public class AlignToAprilTagCommand extends LoggingCommand {
         double goalHeightMeters           = findGoalHeightMeter(ID);
 
 
-        double angleToGoalDegrees         = VisionConstant.mountedAngleDegrees + targetOffsetAngle_Vertical;
+        double angleToGoalDegrees         = VisionConstants.mountedAngleDegrees + targetOffsetAngle_Vertical;
 
         // calculate distance
-        double distanceFromGoal           = (goalHeightMeters - VisionConstant.mountedHeightMeters)
+        double distanceFromGoal           = (goalHeightMeters - VisionConstants.mountedHeightMeters)
             / Math.tan(angleToGoalDegrees);
 
         return distanceFromGoal;

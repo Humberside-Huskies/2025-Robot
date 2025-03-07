@@ -10,15 +10,15 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.ElevatorConstants;
 
-public class ElevatorSubsystem extends SubsystemBase {
+public class ClimbSubsystem extends SubsystemBase {
 
     private final LightsSubsystem lightsSubsystem;
 
     // The motors on the left side of the drive.
-    private final SparkMax        primaryMotor   = new SparkMax(ElevatorConstants.ELEVATOR_MOTOR_CAN_ID,
+    private final SparkMax        primaryMotor   = new SparkMax(ClimbConstants.PRIMARY_MOTOR_PORT,
         MotorType.kBrushless);
 
     private double                primarySpeed   = 0;
@@ -28,7 +28,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 
     /** Creates a new ElevatorSubsystem. */
-    public ElevatorSubsystem(LightsSubsystem lightsSubsystem) {
+    public ClimbSubsystem(LightsSubsystem lightsSubsystem) {
 
         this.lightsSubsystem = lightsSubsystem;
 

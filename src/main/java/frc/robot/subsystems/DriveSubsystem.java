@@ -172,7 +172,7 @@ public class DriveSubsystem extends SubsystemBase {
         }
 
 
-        setupPathPlanner();
+        // setupPathPlanner();
     }
 
     public void setupPathPlanner() {
@@ -536,4 +536,5 @@ public class DriveSubsystem extends SubsystemBase {
 
         return sb.toString();
     }
+
 }

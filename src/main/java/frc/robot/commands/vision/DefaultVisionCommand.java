@@ -1,6 +1,6 @@
 package frc.robot.commands.vision;
 
-import frc.robot.Constants.VisionConstant;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.LoggingCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
@@ -25,7 +25,6 @@ public class DefaultVisionCommand extends LoggingCommand {
         this.visionSubsystem = visionSubsystem;
         this.driveSubsystem  = driveSubsystem;
 
-
         // Add required subsystems
         addRequirements(visionSubsystem);
     }
@@ -42,7 +41,7 @@ public class DefaultVisionCommand extends LoggingCommand {
     public void execute() {
         System.out.println(driveSubsystem.getPose());
 
-        if (visionSubsystem.getAmbiguity() > VisionConstant.AMBIGUITY_THRESHOLD_MEGATAG) {
+        if (visionSubsystem.getAmbiguity() > VisionConstants.AMBIGUITY_THRESHOLD_MEGATAG) {
             System.out.println("Using Encoders");
             driveSubsystem.setPose(visionSubsystem.getBotPose());
             return;

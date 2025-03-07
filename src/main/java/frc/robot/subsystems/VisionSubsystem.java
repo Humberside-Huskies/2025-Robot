@@ -50,7 +50,6 @@ public class VisionSubsystem extends SubsystemBase {
         return rawfiducials[6];
     }
 
-
     /** Safely stop the subsystem from moving */
     public void stop() {
     }
@@ -65,13 +64,6 @@ public class VisionSubsystem extends SubsystemBase {
 
         botPose      = limelightTable.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
         rawfiducials = limelightTable.getEntry("rawfiducials").getDoubleArray(new double[7]);
-
-        // System.out.println(Arrays.toString(limelightTable.getEntry("rawfiducials").getDoubleArray(new double[7])));
-        // System.out.println("botpose_wpi: " + Arrays.toString(
-        // limelightTable.getEntry("botpose_wpi").getDoubleArray(new double[6])));
-        // System.out.println("AprilTag ID (tid): " + limelightTable.getEntry("tid").getDouble(-1));
-
-
     }
 
     @Override
@@ -79,6 +71,6 @@ public class VisionSubsystem extends SubsystemBase {
         // Create an appropriate text readable string describing the state of the
         // subsystem
 
-        return "Vlad created the file, tony is gay";
+        return "Vlad is gsay";
     }
 }
