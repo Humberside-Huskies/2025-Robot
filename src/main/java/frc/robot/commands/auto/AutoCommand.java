@@ -6,23 +6,21 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.AutoConstants.AutoPattern;
-import frc.robot.Constants.CoralConstants;
 import frc.robot.OperatorInput;
-import frc.robot.commands.coral.CoralCommand;
+import frc.robot.commands.coral.CoralCommandOutake;
 import frc.robot.commands.drive.DriveOnHeadingCommand;
 import frc.robot.commands.drive.RotateToTargetCommand;
-import frc.robot.commands.elevator.SetElevatorLevelCommand;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.LightsSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
+//import frc.robot.subsystems.VisionSubsystem;
 
 
 public class AutoCommand extends SequentialCommandGroup {
 
     public AutoCommand(OperatorInput operatorInput, DriveSubsystem driveSubsystem, CoralSubsystem coralSubsystem,
-        ElevatorSubsystem elevatorSubsystem, LightsSubsystem lightsSubsystem, VisionSubsystem visionSubsystem) {
+        ElevatorSubsystem elevatorSubsystem, LightsSubsystem lightsSubsystem) {
 
         // Default is to do nothing.
         // If more commands are added, the instant command will end and
@@ -105,9 +103,9 @@ public class AutoCommand extends SequentialCommandGroup {
 
         case DRIVE_FORWARD_AND_OUTAKE_L1:
 
-            addCommands(new DriveOnHeadingCommand(0, .4, 200, true, driveSubsystem));
-            addCommands(new SetElevatorLevelCommand(CoralConstants.CORAL_HEIGHT_LEVEL_1_CM, elevatorSubsystem));
-            addCommands(new CoralCommand(coralSubsystem, false));
+            addCommands(new DriveOnHeadingCommand(0, .4, 300, true, driveSubsystem));
+            // addCommands(new SetElevatorLevelCommand(CoralConstants.CORAL_HEIGHT_LEVEL_1_CM, elevatorSubsystem));
+            addCommands(new CoralCommandOutake(coralSubsystem));
             return;
         }
 

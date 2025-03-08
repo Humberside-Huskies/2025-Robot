@@ -11,13 +11,12 @@ import frc.robot.Constants.DriveConstants.DriveMode;
 import frc.robot.Constants.OperatorInputConstants;
 import frc.robot.commands.CancelCommand;
 import frc.robot.commands.GameController;
-import frc.robot.commands.coral.CoralCommand;
+import frc.robot.commands.coral.CoralCommandIntake;
+import frc.robot.commands.coral.CoralCommandOutake;
 import frc.robot.commands.elevator.SetElevatorLevelCommand;
-import frc.robot.commands.vision.AlignToAprilTagCommand;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
 
 /**
  * The DriverController exposes all driver functions
@@ -51,6 +50,7 @@ public class OperatorInput extends SubsystemBase {
         autoPatternChooser.addOption("Drive Forward", AutoPattern.DRIVE_FORWARD);
         autoPatternChooser.addOption("Box", AutoPattern.BOX);
         autoPatternChooser.addOption("Path Test", AutoPattern.PATH_TEST_THING);
+        autoPatternChooser.addOption("Vlad carried", AutoPattern.DRIVE_FORWARD_AND_OUTAKE_L1);
 
         waitTimeChooser.setDefaultOption("No wait", 0);
         SmartDashboard.putData("Auto Wait Time", waitTimeChooser);
@@ -74,38 +74,41 @@ public class OperatorInput extends SubsystemBase {
      *
      * @param driveSubsystem
      */
-    public void configureButtonBindings(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem,
+    public void configureButtonBindings(DriveSubsystem driveSubsystem,
         ElevatorSubsystem elevatorSubsystem, CoralSubsystem coralSubsystem) {
 
         // Cancel Command - cancels all running commands on all subsystems
         new Trigger(() -> isCancel())
-            .onTrue(new CancelCommand(this, driveSubsystem));
+            .onTrue(new CancelCommand(this, driveSubsystem, elevatorSubsystem));
 
-        new Trigger(() -> driveToAprilTag())
-            .onTrue(new AlignToAprilTagCommand(driveSubsystem, visionSubsystem));
+        new Trigger(() -> operatorController.getStartButton())
+            .onTrue(new CancelCommand(this, driveSubsystem, elevatorSubsystem));
+
+        // new Trigger(() -> driveToAprilTag())
+        // .onTrue(new AlignToAprilTagCommand(driveSubsystem, visionSubsystem));
 
         // Coral Shooter
         new Trigger(() -> isIntake())
-            .onTrue(new CoralCommand(coralSubsystem, true));
+            .onTrue(new CoralCommandIntake(coralSubsystem));
 
         new Trigger(() -> isOutTake())
-            .onTrue(new CoralCommand(coralSubsystem, false));
+            .onTrue(new CoralCommandOutake(coralSubsystem));
 
 
 
         // Elevator Level setter
         // Configure the DPAD to drive one meter on a heading
-        new Trigger(() -> operatorController.getBButton())
+        new Trigger(() -> operatorController.getPOV() == 0)
             .onTrue(new SetElevatorLevelCommand(CoralConstants.CORAL_HEIGHT_LEVEL_1_CM, elevatorSubsystem));
 
-        new Trigger(() -> operatorController.getAButton())
-            .onTrue(new SetElevatorLevelCommand(CoralConstants.CORAL_HEIGHT_LEVEL_2_CM, elevatorSubsystem));
+        // new Trigger(() -> driverController.getPOV() == 1)
+        // .onTrue(new SetElevatorLevelCommand(CoralConstants.CORAL_HEIGHT_LEVEL_2_CM, elevatorSubsystem));
 
-        new Trigger(() -> operatorController.getXButton())
-            .onTrue(new SetElevatorLevelCommand(CoralConstants.CORAL_HEIGHT_LEVEL_3_CM, elevatorSubsystem));
+        // new Trigger(() -> driverController.getPOV() == 3)
+        // .onTrue(new SetElevatorLevelCommand(CoralConstants.CORAL_HEIGHT_LEVEL_3_CM, elevatorSubsystem));
 
-        new Trigger(() -> operatorController.getYButton())
-            .onTrue(new SetElevatorLevelCommand(CoralConstants.CORAL_HEIGHT_LEVEL_4_CM, elevatorSubsystem));
+        // new Trigger(() -> driverController.getPOV() == 4)
+        // .onTrue(new SetElevatorLevelCommand(CoralConstants.CORAL_HEIGHT_LEVEL_4_CM, elevatorSubsystem));
     }
 
     /*
@@ -193,9 +196,9 @@ public class OperatorInput extends SubsystemBase {
         driverController.setRumble(GenericHID.RumbleType.kBothRumble, 0);
     }
 
-    public boolean driveToAprilTag() {
-        return driverController.getAButton();
-    }
+    // public boolean driveToAprilTag() {
+    // return driverController.getAButton();
+    // }
 
 
     @Override
@@ -203,21 +206,29 @@ public class OperatorInput extends SubsystemBase {
         SmartDashboard.putString("Driver Controller", driverController.toString());
     }
 
-    public double isElevatorJoystick() {
+    public double CoralJoystick() {
+        double value = operatorController.getRightY();
+
+        if (Math.abs(value) < 0.1)
+            return 0;
+        return value;
+    }
+
+    public double ElevatorJoystick() {
         double value = operatorController.getLeftY();
 
-        if (Math.abs(value) < 0.2)
+        if (Math.abs(value) < 0.1)
             return 0;
         return value;
     }
 
-    public double isElevatorRetract() {
-        double value = operatorController.getRightTriggerAxis();
+    // public double isElevatorRetract() {
+    // double value = operatorController.getRightTriggerAxis();
 
-        if (value < 0.4)
-            return 0;
-        return value;
-    }
+    // if (value < 0.1)
+    // return 0;
+    // return value;
+    // }
 
     public boolean isResetEncoders() {
         return driverController.getBackButton();

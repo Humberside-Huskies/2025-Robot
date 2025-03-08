@@ -37,20 +37,24 @@ public class DefaultElevatorCommand extends LoggingCommand {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        double elevatorJoystick = operatorInput.isElevatorJoystick();
+        double elevatorJoystick = operatorInput.ElevatorJoystick();
 
-        if (elevatorJoystick == 0) {
-            elevatorSubsystem.stop();
-        }
         // Climbing
-        else if (elevatorJoystick > 0) {
+        if (elevatorJoystick > 0) {
             elevatorSubsystem.setMotorSpeeds(ElevatorConstants.ELEVATOR_CONTRACT_SPEED * Math.abs(elevatorJoystick));
         }
         // Retracting
         else if (elevatorJoystick < 0) {
             elevatorSubsystem.setMotorSpeeds(ElevatorConstants.ELEVATOR_RETRACT_SPEED * Math.abs(elevatorJoystick));
         }
+        else {
+            if (elevatorSubsystem.getEncoder() > 10)
+                elevatorSubsystem.setMotorSpeeds(ElevatorConstants.HOLD_SPEED);
+            else
+                elevatorSubsystem.stop();
+        }
     }
+
 
 
     // Returns true when the command should end.

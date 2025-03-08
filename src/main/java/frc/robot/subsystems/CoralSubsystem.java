@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkLimitSwitch;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -14,11 +15,12 @@ import frc.robot.Constants.CoralConstants;
 public class CoralSubsystem extends SubsystemBase {
 
     // The motors on the left side of the drive.
-    private final SparkMax primaryMotor      = new SparkMax(CoralConstants.CORAL_MOTOR_CAN_ID,
-        MotorType.kBrushed);
+    private final SparkMax   primaryMotor      = new SparkMax(CoralConstants.CORAL_MOTOR_CAN_ID,
+        MotorType.kBrushless);
 
+    private SparkLimitSwitch primaryLimitSwitch;
 
-    private double         primaryMotorSpeed = 0;
+    private double           primaryMotorSpeed = 0;
 
 
     /** Creates a new ElevatorSubsystem. */
@@ -27,10 +29,12 @@ public class CoralSubsystem extends SubsystemBase {
         // right motor
         SparkMaxConfig config = new SparkMaxConfig();
         config.inverted(CoralConstants.MOTOR_INVERTED)
-            .idleMode(IdleMode.kCoast);
+            .idleMode(IdleMode.kBrake);
+
+        config.limitSwitch.forwardLimitSwitchEnabled(false);
         primaryMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-
+        primaryLimitSwitch = primaryMotor.getForwardLimitSwitch();
 
     }
 
@@ -40,6 +44,10 @@ public class CoralSubsystem extends SubsystemBase {
 
         primaryMotor.set(this.primaryMotorSpeed);
 
+    }
+
+    public boolean getForwardLimitSwitch() {
+        return primaryLimitSwitch.isPressed();
     }
 
     /** Safely stop the subsystem from moving */

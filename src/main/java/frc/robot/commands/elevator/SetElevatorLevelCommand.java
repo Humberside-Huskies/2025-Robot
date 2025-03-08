@@ -1,28 +1,26 @@
 package frc.robot.commands.elevator;
 
-import edu.wpi.first.math.controller.PIDController;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.commands.LoggingCommand;
 import frc.robot.subsystems.ElevatorSubsystem;
 
 public class SetElevatorLevelCommand extends LoggingCommand {
 
-    private ElevatorSubsystem   elevatorSubsystem;
+    private ElevatorSubsystem elevatorSubsystem;
 
-    private double              targetHeightCm;
-    private final PIDController encoderController = new PIDController(0.05, 0, 0);
+    private double            targetEncoderCounts;
 
     /**
      * Creates a new ExampleCommand.
      *
      * @param climbSubsystem The subsystem used by this command.
      */
-    public SetElevatorLevelCommand(double targetHeightCm, ElevatorSubsystem elevatorSubsystem) {
-        this.targetHeightCm    = targetHeightCm;
-        this.elevatorSubsystem = elevatorSubsystem;
+    public SetElevatorLevelCommand(double targetEncoderCounts, ElevatorSubsystem elevatorSubsystem) {
+        this.targetEncoderCounts = targetEncoderCounts;
+        this.elevatorSubsystem   = elevatorSubsystem;
 
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(elevatorSubsystem);
-        encoderController.setTolerance(5);
     }
 
     // Called when the command is initially scheduled.
@@ -30,22 +28,34 @@ public class SetElevatorLevelCommand extends LoggingCommand {
     public void initialize() {
 
         logCommandStart();
-        elevatorSubsystem.resetPrimaryEncoders();
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
+        double error = targetEncoderCounts - elevatorSubsystem.getEncoder();
+        if (Math.abs(error) < ElevatorConstants.HOLD_TOLERANCE) {
+            elevatorSubsystem.setMotorSpeeds(ElevatorConstants.HOLD_SPEED);
+            return;
+        }
 
-        double speed = encoderController.calculate(elevatorSubsystem.getEncoderDistanceCm(), targetHeightCm);
-        elevatorSubsystem.setMotorSpeeds(speed);
+        if (Math.abs(error) < ElevatorConstants.SLOW_TOLERANCE) {
+            if (error > 0)
+                elevatorSubsystem.setMotorSpeeds(ElevatorConstants.SLOW_SPEED + ElevatorConstants.HOLD_SPEED);
+            else
+                elevatorSubsystem.setMotorSpeeds(-ElevatorConstants.SLOW_SPEED);
+        }
+        else {
+            if (error > 0)
+                elevatorSubsystem.setMotorSpeeds(ElevatorConstants.FAST_SPEED + ElevatorConstants.HOLD_SPEED);
+            else
+                elevatorSubsystem.setMotorSpeeds(-ElevatorConstants.FAST_SPEED);
+        }
     }
 
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        if (encoderController.atSetpoint())
-            return true;
         return false;
     }
 

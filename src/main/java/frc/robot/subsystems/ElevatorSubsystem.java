@@ -8,9 +8,9 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ElevatorConstants;
 
 public class ElevatorSubsystem extends SubsystemBase {
@@ -20,6 +20,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     // The motors on the left side of the drive.
     private final SparkMax        primaryMotor   = new SparkMax(ElevatorConstants.ELEVATOR_MOTOR_CAN_ID,
         MotorType.kBrushless);
+
+    private DigitalInput          lowerLimit     = new DigitalInput(0);
 
     private double                primarySpeed   = 0;
 
@@ -41,12 +43,15 @@ public class ElevatorSubsystem extends SubsystemBase {
             .disableFollowerMode();
         primaryMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-
         resetPrimaryEncoders();
     }
 
     public double getEncoderDistanceCm() {
-        return getEncoder() * DriveConstants.CM_PER_ENCODER_COUNT;
+        return getEncoder() * ElevatorConstants.CM_PER_ENCODER_COUNT + ElevatorConstants.DIST_FROM_GROUND_CM;
+    }
+
+    public boolean atLowerLimit() {
+        return !lowerLimit.get();
     }
 
     /**
@@ -76,8 +81,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public void setMotorSpeeds(double primarySpeed) {
 
-        this.primarySpeed = primarySpeed;
+        if (atLowerLimit() && primarySpeed < 0) {
+            primarySpeed = 0;
+        }
 
+        this.primarySpeed = primarySpeed;
         primaryMotor.set(this.primarySpeed);
     }
 
@@ -92,9 +100,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("Right Motor", primarySpeed);
 
-        SmartDashboard.putNumber("Encoder", Math.round(getEncoder() * 100) / 100d);
+        SmartDashboard.putNumber("Elevator Encoder", Math.round(getEncoder() * 100) / 100d);
         SmartDashboard.putNumber("Distance (cm)", Math.round(getEncoderDistanceCm() * 10) / 10d);
         SmartDashboard.putNumber("Velocity", Math.round(getEncoderSpeed() * 100) / 100d);
+        SmartDashboard.putBoolean("Lower Limit", atLowerLimit());
+
     }
 
 

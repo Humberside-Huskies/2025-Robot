@@ -67,7 +67,7 @@ public final class Constants {
         public static final double  GYRO_PID_KP          = 0.01;
 
         public static final double  DRIVE_SCALING_BOOST  = 1;
-        public static final double  DRIVE_SCALING_NORMAL = .2;
+        public static final double  DRIVE_SCALING_NORMAL = .5;
         public static final double  DRIVE_SCALING_SLOW   = .3;
 
         public static final double  ROBOT_WIDTH          = .6;
@@ -81,29 +81,35 @@ public final class Constants {
 
     public static final class ElevatorConstants {
         public static final int    ELEVATOR_MOTOR_CAN_ID         = 30;
-        public static final double ELEVATOR_CONTRACT_SPEED       = .5;
-        public static final double ELEVATOR_RETRACT_SPEED        = -.5;
+        public static final double ELEVATOR_CONTRACT_SPEED       = .3;
+        public static final double ELEVATOR_RETRACT_SPEED        = -.2;
 
         public static final double ELEVATOR_TOLERANCE            = 2.5;
 
         public static final double ELEVATOR_SLOW_ZONE_SPEED      = .2;
         public static final double ELEVATOR_MAX_SPEED            = .5;
-
-        public static final double ENCODER_COUNTS_PER_REVOLUTION = 16.8;
-        public static final double ROBOT_WHEEL_DIAMETER_CM       = 6 * 2.54;
-        public static final double CM_PER_ENCODER_COUNT          = (ROBOT_WHEEL_DIAMETER_CM * Math.PI)
+        public static final double DIST_FROM_GROUND_CM           = 41.5;
+        public static final double ENCODER_COUNTS_PER_REVOLUTION = 19.7;
+        public static final double ROBOT_WHEEL_DIAMETER_CM       = 5.05;
+        public static final double CM_PER_ENCODER_COUNT          = (ROBOT_WHEEL_DIAMETER_CM * Math.PI) * 2
             / ENCODER_COUNTS_PER_REVOLUTION;
+
+        public static final double HOLD_SPEED                    = 0.05;
+        public static final double SLOW_SPEED                    = 0.07;
+        public static final double HOLD_TOLERANCE                = 5;
+        public static final double SLOW_TOLERANCE                = 10;
+        public static final double FAST_SPEED                    = 0.25;
     }
 
     public static final class CoralConstants {
         public static final int     CORAL_MOTOR_CAN_ID      = 50;
         public static final boolean MOTOR_INVERTED          = false;
-        public static final double  INTAKE_SPEED            = 0.5;
+        public static final double  INTAKE_SPEED            = 0.3;
 
-        public static final double  CORAL_HEIGHT_LEVEL_1_CM = 0;
-        public static final double  CORAL_HEIGHT_LEVEL_2_CM = 0;
-        public static final double  CORAL_HEIGHT_LEVEL_3_CM = 181;
-        public static final double  CORAL_HEIGHT_LEVEL_4_CM = 47.5;
+        public static final double  CORAL_HEIGHT_LEVEL_1_CM = 28;
+        public static final double  CORAL_HEIGHT_LEVEL_2_CM = 100;
+        public static final double  CORAL_HEIGHT_LEVEL_3_CM = 100;
+        public static final double  CORAL_HEIGHT_LEVEL_4_CM = 100;
     }
 
     public static final class VisionConstants {
