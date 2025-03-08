@@ -53,24 +53,27 @@ public final class Constants {
         }
 
         // NOTE: Follower motors are at CAN_ID+1
-        public static final int     LEFT_MOTOR_CAN_ID    = 10;
-        public static final int     RIGHT_MOTOR_CAN_ID   = 20;
+        public static final int     LEFT_MOTOR_CAN_ID             = 10;
+        public static final int     RIGHT_MOTOR_CAN_ID            = 20;
 
-        public static final boolean LEFT_MOTOR_INVERTED  = false;
-        public static final boolean RIGHT_MOTOR_INVERTED = true;
+        public static final boolean LEFT_MOTOR_INVERTED           = false;
+        public static final boolean RIGHT_MOTOR_INVERTED          = true;
 
-        public static final double  CM_PER_ENCODER_COUNT = 3.503;
+        public static final double  ENCODER_COUNTS_PER_REVOLUTION = 8.46;
+        public static final double  ROBOT_WHEEL_DIAMETER_CM       = 15.24;
+        public static final double  CM_PER_ENCODER_COUNT          = (ROBOT_WHEEL_DIAMETER_CM * Math.PI) * 2
+            / ENCODER_COUNTS_PER_REVOLUTION;
 
-        public static final boolean GYRO_INVERTED        = false;
+        public static final boolean GYRO_INVERTED                 = false;
 
         /** Proportional gain for gyro pid tracking */
-        public static final double  GYRO_PID_KP          = 0.01;
+        public static final double  GYRO_PID_KP                   = 0.01;
 
-        public static final double  DRIVE_SCALING_BOOST  = 1;
-        public static final double  DRIVE_SCALING_NORMAL = .5;
-        public static final double  DRIVE_SCALING_SLOW   = .3;
+        public static final double  DRIVE_SCALING_BOOST           = 1;
+        public static final double  DRIVE_SCALING_NORMAL          = .5;
+        public static final double  DRIVE_SCALING_SLOW            = .3;
 
-        public static final double  ROBOT_WIDTH          = .6;
+        public static final double  ROBOT_WIDTH                   = .6;
     }
 
     public static final class LightsConstants {
@@ -89,8 +92,9 @@ public final class Constants {
         public static final double ELEVATOR_SLOW_ZONE_SPEED      = .2;
         public static final double ELEVATOR_MAX_SPEED            = .5;
         public static final double DIST_FROM_GROUND_CM           = 41.5;
+
         public static final double ENCODER_COUNTS_PER_REVOLUTION = 19.7;
-        public static final double ROBOT_WHEEL_DIAMETER_CM       = 5.05;
+        public static final double ROBOT_WHEEL_DIAMETER_CM       = 15;
         public static final double CM_PER_ENCODER_COUNT          = (ROBOT_WHEEL_DIAMETER_CM * Math.PI) * 2
             / ENCODER_COUNTS_PER_REVOLUTION;
 
@@ -98,18 +102,18 @@ public final class Constants {
         public static final double SLOW_SPEED                    = 0.07;
         public static final double HOLD_TOLERANCE                = 5;
         public static final double SLOW_TOLERANCE                = 10;
-        public static final double FAST_SPEED                    = 0.25;
+        public static final double FAST_SPEED                    = 0.55;
     }
 
     public static final class CoralConstants {
-        public static final int     CORAL_MOTOR_CAN_ID      = 50;
-        public static final boolean MOTOR_INVERTED          = false;
-        public static final double  INTAKE_SPEED            = 0.3;
+        public static final int     CORAL_MOTOR_CAN_ID       = 50;
+        public static final boolean MOTOR_INVERTED           = false;
+        public static final double  INTAKE_SPEED             = 0.3;
 
-        public static final double  CORAL_HEIGHT_LEVEL_1_CM = 28;
-        public static final double  CORAL_HEIGHT_LEVEL_2_CM = 100;
-        public static final double  CORAL_HEIGHT_LEVEL_3_CM = 100;
-        public static final double  CORAL_HEIGHT_LEVEL_4_CM = 100;
+        public static final double  HEIGHT_L1_ENCODER_COUNTS = 10;
+        public static final double  HEIGHT_L2_ENCODER_COUNTS = 38.45;
+        public static final double  HEIGHT_L3_ENCODER_COUNTS = 67.98;
+        public static final double  HEIGHT_L4_ENCODER_COUNTS = 112.17;
     }
 
     public static final class VisionConstants {

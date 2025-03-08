@@ -9,6 +9,7 @@ public class SetElevatorLevelCommand extends LoggingCommand {
     private ElevatorSubsystem elevatorSubsystem;
 
     private double            targetEncoderCounts;
+    private double            error;
 
     /**
      * Creates a new ExampleCommand.
@@ -33,11 +34,7 @@ public class SetElevatorLevelCommand extends LoggingCommand {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        double error = targetEncoderCounts - elevatorSubsystem.getEncoder();
-        if (Math.abs(error) < ElevatorConstants.HOLD_TOLERANCE) {
-            elevatorSubsystem.setMotorSpeeds(ElevatorConstants.HOLD_SPEED);
-            return;
-        }
+        error = targetEncoderCounts - elevatorSubsystem.getEncoder();
 
         if (Math.abs(error) < ElevatorConstants.SLOW_TOLERANCE) {
             if (error > 0)
@@ -56,6 +53,8 @@ public class SetElevatorLevelCommand extends LoggingCommand {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
+        if (Math.abs(error) < ElevatorConstants.HOLD_TOLERANCE)
+            return true;
         return false;
     }
 

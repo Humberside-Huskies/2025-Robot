@@ -50,7 +50,7 @@ public class OperatorInput extends SubsystemBase {
         autoPatternChooser.addOption("Drive Forward", AutoPattern.DRIVE_FORWARD);
         autoPatternChooser.addOption("Box", AutoPattern.BOX);
         autoPatternChooser.addOption("Path Test", AutoPattern.PATH_TEST_THING);
-        autoPatternChooser.addOption("Vlad carried", AutoPattern.DRIVE_FORWARD_AND_OUTAKE_L1);
+        autoPatternChooser.addOption("Vlad no carried", AutoPattern.DRIVE_FORWARD_AND_OUTAKE_L1);
 
         waitTimeChooser.setDefaultOption("No wait", 0);
         SmartDashboard.putData("Auto Wait Time", waitTimeChooser);
@@ -99,16 +99,16 @@ public class OperatorInput extends SubsystemBase {
         // Elevator Level setter
         // Configure the DPAD to drive one meter on a heading
         new Trigger(() -> operatorController.getPOV() == 0)
-            .onTrue(new SetElevatorLevelCommand(CoralConstants.CORAL_HEIGHT_LEVEL_1_CM, elevatorSubsystem));
+            .onTrue(new SetElevatorLevelCommand(CoralConstants.HEIGHT_L1_ENCODER_COUNTS, elevatorSubsystem));
 
-        // new Trigger(() -> driverController.getPOV() == 1)
-        // .onTrue(new SetElevatorLevelCommand(CoralConstants.CORAL_HEIGHT_LEVEL_2_CM, elevatorSubsystem));
+        new Trigger(() -> operatorController.getPOV() == 90)
+            .onTrue(new SetElevatorLevelCommand(CoralConstants.HEIGHT_L2_ENCODER_COUNTS, elevatorSubsystem));
 
-        // new Trigger(() -> driverController.getPOV() == 3)
-        // .onTrue(new SetElevatorLevelCommand(CoralConstants.CORAL_HEIGHT_LEVEL_3_CM, elevatorSubsystem));
+        new Trigger(() -> operatorController.getPOV() == 180)
+            .onTrue(new SetElevatorLevelCommand(CoralConstants.HEIGHT_L3_ENCODER_COUNTS, elevatorSubsystem));
 
-        // new Trigger(() -> driverController.getPOV() == 4)
-        // .onTrue(new SetElevatorLevelCommand(CoralConstants.CORAL_HEIGHT_LEVEL_4_CM, elevatorSubsystem));
+        new Trigger(() -> operatorController.getPOV() == 270)
+            .onTrue(new SetElevatorLevelCommand(CoralConstants.HEIGHT_L4_ENCODER_COUNTS, elevatorSubsystem));
     }
 
     /*

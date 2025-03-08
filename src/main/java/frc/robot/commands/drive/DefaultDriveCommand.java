@@ -33,7 +33,6 @@ public class DefaultDriveCommand extends LoggingCommand {
 
     @Override
     public void execute() {
-
         // Get the selected drive mode
         DriveMode driveMode          = operatorInput.getSelectedDriveMode();
 

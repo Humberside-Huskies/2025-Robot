@@ -474,7 +474,7 @@ public class DriveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Right Encoder", Math.round(getRightEncoder() * 100) / 100d);
         SmartDashboard.putNumber("Left Encoder", Math.round(getLeftEncoder() * 100) / 100d);
         SmartDashboard.putNumber("Avg Encoder", Math.round(getAverageEncoderValue() * 100) / 100d);
-        SmartDashboard.putNumber("Distance (cm)", Math.round(getEncoderDistanceCm() * 10) / 10d);
+        SmartDashboard.putNumber("Distancexx (cm)", Math.round(getEncoderDistanceCm() * 10) / 10d);
         SmartDashboard.putNumber("Right Velocity", Math.round(getRightEncoderSpeed() * 100) / 100d);
         SmartDashboard.putNumber("Left Velocity", Math.round(getLeftEncoderSpeed() * 100) / 100d);
 

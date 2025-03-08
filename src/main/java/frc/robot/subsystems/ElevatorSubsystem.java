@@ -83,6 +83,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         if (atLowerLimit() && primarySpeed < 0) {
             primarySpeed = 0;
+            resetPrimaryEncoders();
         }
 
         this.primarySpeed = primarySpeed;

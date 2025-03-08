@@ -31,7 +31,6 @@ public class DefaultElevatorCommand extends LoggingCommand {
     @Override
     public void initialize() {
         logCommandStart();
-        elevatorSubsystem.resetPrimaryEncoders();
     }
 
     // Called every time the scheduler runs while the command is scheduled.

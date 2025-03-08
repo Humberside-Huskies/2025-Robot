@@ -48,9 +48,6 @@ public class RobotContainer {
 
         // coralSubsystem.setDefaultCommand(
         // new DefaultCoralCommand(operatorInput, coralSubsystem));
-        elevatorSubsystem.setDefaultCommand(
-            new DefaultElevatorCommand(operatorInput, elevatorSubsystem, lightsSubsystem));
-
         // visionSubsystem.setDefaultCommand(
         // new DefaultVisionCommand(driveSubsystem, visionSubsystem));
 
