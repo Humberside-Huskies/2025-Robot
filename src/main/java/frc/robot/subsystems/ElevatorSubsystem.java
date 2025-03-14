@@ -46,6 +46,10 @@ public class ElevatorSubsystem extends SubsystemBase {
         resetPrimaryEncoders();
     }
 
+    public boolean manual_elevator_on = false;
+
+
+
     public double getEncoderDistanceCm() {
         return getEncoder() * ElevatorConstants.CM_PER_ENCODER_COUNT + ElevatorConstants.DIST_FROM_GROUND_CM;
     }

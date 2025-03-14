@@ -27,6 +27,8 @@ public class DefaultElevatorCommand extends LoggingCommand {
         addRequirements(elevatorSubsystem);
     }
 
+
+
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
@@ -38,13 +40,16 @@ public class DefaultElevatorCommand extends LoggingCommand {
     public void execute() {
         double elevatorJoystick = operatorInput.ElevatorJoystick();
 
+
         // Climbing
         if (elevatorJoystick > 0) {
             elevatorSubsystem.setMotorSpeeds(ElevatorConstants.ELEVATOR_CONTRACT_SPEED * Math.abs(elevatorJoystick));
+            elevatorSubsystem.manual_elevator_on = true;
         }
         // Retracting
         else if (elevatorJoystick < 0) {
             elevatorSubsystem.setMotorSpeeds(ElevatorConstants.ELEVATOR_RETRACT_SPEED * Math.abs(elevatorJoystick));
+            elevatorSubsystem.manual_elevator_on = true;
         }
         else {
             if (elevatorSubsystem.getEncoder() > 10)

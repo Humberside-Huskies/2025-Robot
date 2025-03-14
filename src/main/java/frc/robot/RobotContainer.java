@@ -4,13 +4,20 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.wpilibj.RobotState;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.commands.auto.AutoCommand;
+import frc.robot.commands.coral.CoralCommandIntake;
+import frc.robot.commands.coral.CoralCommandOutake;
 import frc.robot.commands.drive.DefaultDriveCommand;
 import frc.robot.commands.elevator.DefaultElevatorCommand;
+import frc.robot.commands.elevator.SetElevatorLevelCommand;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -27,14 +34,16 @@ public class RobotContainer {
     // Subsystems
     // Declarre the lighting subsystem first and pass it into the other subsystem
     // constructors so that they can indicate status information on the lights
-    private final LightsSubsystem   lightsSubsystem   = new LightsSubsystem();
-    private final DriveSubsystem    driveSubsystem    = new DriveSubsystem(lightsSubsystem);
+    private final LightsSubsystem    lightsSubsystem   = new LightsSubsystem();
+    private final DriveSubsystem     driveSubsystem    = new DriveSubsystem(lightsSubsystem);
     // private final VisionSubsystem visionSubsystem = new VisionSubsystem(lightsSubsystem);
-    private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(lightsSubsystem);
-    private final CoralSubsystem    coralSubsystem    = new CoralSubsystem();
+    private final ElevatorSubsystem  elevatorSubsystem = new ElevatorSubsystem(lightsSubsystem);
+    private final CoralSubsystem     coralSubsystem    = new CoralSubsystem();
 
     // Driver and operator controllers
-    private final OperatorInput     operatorInput     = new OperatorInput();
+    private final OperatorInput      operatorInput     = new OperatorInput();
+
+    private SendableChooser<Command> autoChooser       = new SendableChooser<>();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -51,6 +60,8 @@ public class RobotContainer {
         // visionSubsystem.setDefaultCommand(
         // new DefaultVisionCommand(driveSubsystem, visionSubsystem));
 
+        registerAuto();
+
 
         // Configure the button bindings - pass in all subsystems
         operatorInput.configureButtonBindings(driveSubsystem, elevatorSubsystem, coralSubsystem);
@@ -61,6 +72,31 @@ public class RobotContainer {
         new Trigger(() -> RobotState.isEnabled())
             .onTrue(new InstantCommand(() -> lightsSubsystem.setRSLFlashCount(5)));
     }
+
+    private void registerAuto() {
+
+
+        autoChooser = new SendableChooser<>();
+        autoChooser.setDefaultOption("TopAuto", driveSubsystem.getPPAutoCommand("TopAuto"));
+        // autoChooser.addOption(null, getAutonomousCommand());
+
+
+        NamedCommands.registerCommand("elevator1",
+            new SetElevatorLevelCommand(ElevatorPosition.CORAL_HEIGHT_LEVEL_1_CM, elevatorSubsystem));
+
+
+        NamedCommands.registerCommand("elevator2",
+            new SetElevatorLevelCommand(ElevatorPosition.CORAL_HEIGHT_LEVEL_2_CM, elevatorSubsystem));
+
+
+        NamedCommands.registerCommand("elevator3",
+            new SetElevatorLevelCommand(ElevatorPosition.CORAL_HEIGHT_LEVEL_3_CM, elevatorSubsystem));
+
+
+        NamedCommands.registerCommand("shoot", new CoralCommandOutake(coralSubsystem));
+        NamedCommands.registerCommand("intake", new CoralCommandIntake(coralSubsystem));
+    }
+
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.

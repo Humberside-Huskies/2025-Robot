@@ -6,8 +6,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants.AutoPattern;
-import frc.robot.Constants.CoralConstants;
 import frc.robot.Constants.DriveConstants.DriveMode;
+import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.Constants.OperatorInputConstants;
 import frc.robot.commands.CancelCommand;
 import frc.robot.commands.GameController;
@@ -99,16 +99,16 @@ public class OperatorInput extends SubsystemBase {
         // Elevator Level setter
         // Configure the DPAD to drive one meter on a heading
         new Trigger(() -> operatorController.getPOV() == 0)
-            .onTrue(new SetElevatorLevelCommand(CoralConstants.HEIGHT_L1_ENCODER_COUNTS, elevatorSubsystem));
+            .onTrue(new SetElevatorLevelCommand(ElevatorPosition.CORAL_HEIGHT_LEVEL_1_CM, elevatorSubsystem));
 
         new Trigger(() -> operatorController.getPOV() == 90)
-            .onTrue(new SetElevatorLevelCommand(CoralConstants.HEIGHT_L2_ENCODER_COUNTS, elevatorSubsystem));
+            .onTrue(new SetElevatorLevelCommand(ElevatorPosition.CORAL_HEIGHT_LEVEL_2_CM, elevatorSubsystem));
 
         new Trigger(() -> operatorController.getPOV() == 180)
-            .onTrue(new SetElevatorLevelCommand(CoralConstants.HEIGHT_L3_ENCODER_COUNTS, elevatorSubsystem));
+            .onTrue(new SetElevatorLevelCommand(ElevatorPosition.CORAL_HEIGHT_LEVEL_3_CM, elevatorSubsystem));
 
         new Trigger(() -> operatorController.getPOV() == 270)
-            .onTrue(new SetElevatorLevelCommand(CoralConstants.HEIGHT_L4_ENCODER_COUNTS, elevatorSubsystem));
+            .onTrue(new SetElevatorLevelCommand(ElevatorPosition.CORAL_HEIGHT_LEVEL_4_CM, elevatorSubsystem));
     }
 
     /*
