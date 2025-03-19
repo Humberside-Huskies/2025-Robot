@@ -34,8 +34,7 @@ public class RobotContainer {
         // constructors so that they can indicate status information on the lights
         private final LightsSubsystem   lightsSubsystem   = new LightsSubsystem();
         private final DriveSubsystem    driveSubsystem    = new DriveSubsystem(lightsSubsystem);
-        // private final VisionSubsystem visionSubsystem = new
-        // VisionSubsystem(lightsSubsystem);
+        // private final VisionSubsystem visionSubsystem = new VisionSubsystem(lightsSubsystem);
         private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(lightsSubsystem);
         private final CoralSubsystem    coralSubsystem    = new CoralSubsystem();
         private final ClimbSubsystem    climbSubsystem    = new ClimbSubsystem(lightsSubsystem);

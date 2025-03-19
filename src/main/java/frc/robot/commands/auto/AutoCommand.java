@@ -105,11 +105,24 @@ public class AutoCommand extends SequentialCommandGroup {
 
         case DRIVE_FORWARD_AND_OUTAKE_L1:
 
-            addCommands(new DriveOnHeadingCommand(0, .2, 550, true, driveSubsystem));
-            addCommands(new WaitCommand(4));
+            addCommands(new DriveOnHeadingCommand(0, .2, 350, true, driveSubsystem));
+            addCommands(new WaitCommand(2.5));
             addCommands(new SetElevatorLevelCommand(CoralConstants.HEIGHT_L4_ENCODER_COUNTS, elevatorSubsystem));
-            addCommands(new WaitCommand(5));
+            addCommands(new WaitCommand(3));
             addCommands(new CoralCommandOutake(coralSubsystem));
+            addCommands(new WaitCommand(1));
+            addCommands(new SetElevatorLevelCommand(CoralConstants.HEIGHT_L1_ENCODER_COUNTS, elevatorSubsystem));
+            addCommands(new WaitCommand(1));
+
+
+            // Added use it with precaution HEADING TO STATION
+            addCommands(new DriveOnHeadingCommand(0, -0.2, 100, true, driveSubsystem));
+            addCommands(new DriveOnHeadingCommand(90, .2, 350, true, driveSubsystem));
+            addCommands(new DriveOnHeadingCommand(0, .2, 500, true, driveSubsystem));
+
+            // Added use with precaution ALIGN to the station for human player
+            // addCommands(new DriveOnHeadingCommand(autoDelay, autoDelay, autoDelay, driveSubsystem));
+
             return;
         }
 

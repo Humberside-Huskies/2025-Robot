@@ -88,6 +88,14 @@ public class OperatorInput extends SubsystemBase {
         // new Trigger(() -> driveToAprilTag())
         // .onTrue(new AlignToAprilTagCommand(driveSubsystem, visionSubsystem));
 
+        // new Trigger(() -> driverController.getPOV() == 90)
+        // .onTrue(new AlignToReefCommand(driveSubsystem, visionSubsystem, ReefOffsetAngle.Right));
+
+        // new Trigger(() -> driverController.getPOV() == 270)
+        // .onTrue(new AlignToReefCommand(driveSubsystem, visionSubsystem, ReefOffsetAngle.Left));
+
+
+
         // Coral Shooter
         new Trigger(() -> isIntake())
             .onTrue(new CoralCommandIntake(coralSubsystem));
@@ -152,6 +160,8 @@ public class OperatorInput extends SubsystemBase {
     public boolean isSlowDown() {
         return driverController.getRightBumperButton();
     }
+
+
 
     public double getLeftSpeed() {
         return driverController.getLeftY();

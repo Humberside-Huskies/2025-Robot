@@ -108,12 +108,14 @@ public final class Constants {
     public static final class CoralConstants {
         public static final int     CORAL_MOTOR_CAN_ID       = 50;
         public static final boolean MOTOR_INVERTED           = false;
-        public static final double  INTAKE_SPEED             = 0.3;
+        public static final double  INTAKE_SPEED             = 0.2;
+        public static final double  OUTTAKE_SPEED            = 0.3;
 
-        public static final double  HEIGHT_L1_ENCODER_COUNTS = 10;
+
+        public static final double  HEIGHT_L1_ENCODER_COUNTS = 3;
         public static final double  HEIGHT_L2_ENCODER_COUNTS = 40.00;
         public static final double  HEIGHT_L3_ENCODER_COUNTS = 66.00;
-        public static final double  HEIGHT_L4_ENCODER_COUNTS = 112.17;
+        public static final double  HEIGHT_L4_ENCODER_COUNTS = 113.17;
     }
 
     public static final class VisionConstants {
@@ -126,5 +128,20 @@ public final class Constants {
         public static final double ReefHeightMeters            = 0.308;
         public static final double ProcessorHeightMeters       = 1.301;
         public static final double BargeHeightMeters           = 1.868;
+
+        public enum ReefOffsetAngle {
+            Right(15),
+            Left(-15);
+
+            private double offset;
+
+            private ReefOffsetAngle(double offset) {
+                this.offset = offset;
+            }
+
+            public double getOffset() {
+                return offset;
+            }
+        }
     }
 }
