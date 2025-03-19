@@ -35,7 +35,7 @@ public class SetElevatorLevelCommand extends LoggingCommand {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        error = targetEncoderCounts.getPose() - elevatorSubsystem.getEncoder();
+        error = targetEncoderCounts.getEncoderCounts() - elevatorSubsystem.getEncoder();
 
         if (Math.abs(error) < ElevatorConstants.SLOW_TOLERANCE) {
             if (error > 0)

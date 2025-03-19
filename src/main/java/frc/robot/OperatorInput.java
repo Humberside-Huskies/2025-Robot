@@ -1,11 +1,13 @@
 package frc.robot;
 
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.AutoConstants.AutoPattern;
 import frc.robot.Constants.DriveConstants.DriveMode;
 import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.Constants.OperatorInputConstants;
@@ -29,9 +31,8 @@ public class OperatorInput extends SubsystemBase {
     private final GameController operatorController;
 
     // Auto Setup Choosers
-    SendableChooser<AutoPattern> autoPatternChooser = new SendableChooser<>();
-    SendableChooser<Integer>     waitTimeChooser    = new SendableChooser<>();
-    SendableChooser<DriveMode>   driveModeChooser   = new SendableChooser<>();
+    SendableChooser<DriveMode>   driveModeChooser = new SendableChooser<>();
+    SendableChooser<Command>     autoChooser      = new SendableChooser<>();
 
     /**
      * Construct an OperatorInput class that is fed by a DriverController and optionally an
@@ -43,20 +44,6 @@ public class OperatorInput extends SubsystemBase {
             OperatorInputConstants.DRIVER_CONTROLLER_DEADBAND);
         operatorController = new GameController(OperatorInputConstants.OPERATOR_CONTROLLER_PORT,
             OperatorInputConstants.OPERATOR_CONTROLLER_DEADBAND);
-
-        // Initialize the dashboard selectors
-        autoPatternChooser.setDefaultOption("Do Nothing", AutoPattern.DO_NOTHING);
-        SmartDashboard.putData("Auto Pattern", autoPatternChooser);
-        autoPatternChooser.addOption("Drive Forward", AutoPattern.DRIVE_FORWARD);
-        autoPatternChooser.addOption("Box", AutoPattern.BOX);
-        autoPatternChooser.addOption("Path Test", AutoPattern.PATH_TEST_THING);
-        autoPatternChooser.addOption("Vlad no carried", AutoPattern.DRIVE_FORWARD_AND_OUTAKE_L1);
-
-        waitTimeChooser.setDefaultOption("No wait", 0);
-        SmartDashboard.putData("Auto Wait Time", waitTimeChooser);
-        waitTimeChooser.addOption("1 second", 1);
-        waitTimeChooser.addOption("3 seconds", 3);
-        waitTimeChooser.addOption("5 seconds", 5);
 
         driveModeChooser.setDefaultOption("Arcade", DriveMode.ARCADE);
         SmartDashboard.putData("Drive Mode", driveModeChooser);
@@ -99,27 +86,41 @@ public class OperatorInput extends SubsystemBase {
         // Elevator Level setter
         // Configure the DPAD to drive one meter on a heading
         new Trigger(() -> operatorController.getPOV() == 0)
-            .onTrue(new SetElevatorLevelCommand(ElevatorPosition.CORAL_HEIGHT_LEVEL_1_CM, elevatorSubsystem));
+            .onTrue(new SetElevatorLevelCommand(ElevatorPosition.CORAL_HEIGHT_L1_ENCODER_COUNT, elevatorSubsystem));
 
         new Trigger(() -> operatorController.getPOV() == 90)
-            .onTrue(new SetElevatorLevelCommand(ElevatorPosition.CORAL_HEIGHT_LEVEL_2_CM, elevatorSubsystem));
+            .onTrue(new SetElevatorLevelCommand(ElevatorPosition.CORAL_HEIGHT_L2_ENCODER_COUNT, elevatorSubsystem));
 
         new Trigger(() -> operatorController.getPOV() == 180)
-            .onTrue(new SetElevatorLevelCommand(ElevatorPosition.CORAL_HEIGHT_LEVEL_3_CM, elevatorSubsystem));
+            .onTrue(new SetElevatorLevelCommand(ElevatorPosition.CORAL_HEIGHT_L3_ENCODER_COUNT, elevatorSubsystem));
 
         new Trigger(() -> operatorController.getPOV() == 270)
-            .onTrue(new SetElevatorLevelCommand(ElevatorPosition.CORAL_HEIGHT_LEVEL_4_CM, elevatorSubsystem));
+            .onTrue(new SetElevatorLevelCommand(ElevatorPosition.CORAL_HEIGHT_L4_ENCODER_COUNT, elevatorSubsystem));
+
+        registerAuto(driveSubsystem, elevatorSubsystem, coralSubsystem);
+        autoChooser.setDefaultOption("TopAuto", driveSubsystem.getPPAutoCommand("TopAuto"));
+        autoChooser.setDefaultOption("Test", driveSubsystem.getPPAutoCommand("Test"));
+        SmartDashboard.putData("Auto Chooser", autoChooser);
+
     }
 
-    /*
-     * Auto Pattern Selectors
-     */
-    public AutoPattern getAutoPattern() {
-        return autoPatternChooser.getSelected();
+    private void registerAuto(DriveSubsystem driveSubsystem, ElevatorSubsystem elevatorSubsystem, CoralSubsystem coralSubsystem) {
+
+        NamedCommands.registerCommand("elevator1",
+            new SetElevatorLevelCommand(ElevatorPosition.CORAL_HEIGHT_L1_ENCODER_COUNT, elevatorSubsystem));
+
+        NamedCommands.registerCommand("elevator2",
+            new SetElevatorLevelCommand(ElevatorPosition.CORAL_HEIGHT_L2_ENCODER_COUNT, elevatorSubsystem));
+
+        NamedCommands.registerCommand("elevator3",
+            new SetElevatorLevelCommand(ElevatorPosition.CORAL_HEIGHT_L3_ENCODER_COUNT, elevatorSubsystem));
+
+        NamedCommands.registerCommand("shoot", new CoralCommandOutake(coralSubsystem));
+        NamedCommands.registerCommand("intake", new CoralCommandIntake(coralSubsystem));
     }
 
-    public Integer getAutoDelay() {
-        return waitTimeChooser.getSelected();
+    public Command getAutoCommand() {
+        return autoChooser.getSelected();
     }
 
     /*

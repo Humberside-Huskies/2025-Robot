@@ -61,7 +61,7 @@ public final class Constants {
 
         public static final double  ENCODER_COUNTS_PER_REVOLUTION = 8.46;
         public static final double  ROBOT_WHEEL_DIAMETER_CM       = 15.24;
-        public static final double  CM_PER_ENCODER_COUNT          = (ROBOT_WHEEL_DIAMETER_CM * Math.PI) * 2
+        public static final double  CM_PER_ENCODER_COUNT          = (ROBOT_WHEEL_DIAMETER_CM * Math.PI)
             / ENCODER_COUNTS_PER_REVOLUTION;
 
         public static final boolean GYRO_INVERTED                 = false;
@@ -103,6 +103,30 @@ public final class Constants {
         public static final double HOLD_TOLERANCE                = 5;
         public static final double SLOW_TOLERANCE                = 10;
         public static final double FAST_SPEED                    = 0.55;
+
+
+        public static enum ElevatorPosition {
+            CORAL_HEIGHT_L1_ENCODER_COUNT(
+                10),
+            CORAL_HEIGHT_L2_ENCODER_COUNT(
+                38.45),
+            CORAL_HEIGHT_L3_ENCODER_COUNT(
+                67.98),
+            CORAL_HEIGHT_L4_ENCODER_COUNT(112.17);
+
+            private final double counts;
+
+
+            private ElevatorPosition(double counts) {
+                this.counts = counts;
+            }
+
+
+            public double getEncoderCounts() {
+                return counts;
+            }
+        };
+
     }
 
     public static final class CoralConstants {
