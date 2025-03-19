@@ -40,7 +40,7 @@ public final class Constants {
     }
 
     public static final class ClimbConstants {
-        public static final int    PRIMARY_MOTOR_PORT  = 50;
+        public static final int    PRIMARY_MOTOR_PORT  = 40;
 
         public static final double CLIMBER_MOTOR_SPEED = 0.5;
         public static final double RETRACT_MOTOR_SPEED = -0.65;
@@ -53,8 +53,8 @@ public final class Constants {
         }
 
         // NOTE: Follower motors are at CAN_ID+1
-        public static final int     LEFT_MOTOR_CAN_ID             = 10;
-        public static final int     RIGHT_MOTOR_CAN_ID            = 20;
+        public static final int     LEFT_MOTOR_CAN_ID             = 20;
+        public static final int     RIGHT_MOTOR_CAN_ID            = 10;
 
         public static final boolean LEFT_MOTOR_INVERTED           = false;
         public static final boolean RIGHT_MOTOR_INVERTED          = true;
@@ -111,8 +111,8 @@ public final class Constants {
         public static final double  INTAKE_SPEED             = 0.3;
 
         public static final double  HEIGHT_L1_ENCODER_COUNTS = 10;
-        public static final double  HEIGHT_L2_ENCODER_COUNTS = 38.45;
-        public static final double  HEIGHT_L3_ENCODER_COUNTS = 67.98;
+        public static final double  HEIGHT_L2_ENCODER_COUNTS = 40.00;
+        public static final double  HEIGHT_L3_ENCODER_COUNTS = 66.00;
         public static final double  HEIGHT_L4_ENCODER_COUNTS = 112.17;
     }
 

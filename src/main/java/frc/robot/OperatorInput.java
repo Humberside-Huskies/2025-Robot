@@ -11,6 +11,7 @@ import frc.robot.Constants.DriveConstants.DriveMode;
 import frc.robot.Constants.OperatorInputConstants;
 import frc.robot.commands.CancelCommand;
 import frc.robot.commands.GameController;
+import frc.robot.commands.coral.CoralCommandEject;
 import frc.robot.commands.coral.CoralCommandIntake;
 import frc.robot.commands.coral.CoralCommandOutake;
 import frc.robot.commands.elevator.SetElevatorLevelCommand;
@@ -50,7 +51,7 @@ public class OperatorInput extends SubsystemBase {
         autoPatternChooser.addOption("Drive Forward", AutoPattern.DRIVE_FORWARD);
         autoPatternChooser.addOption("Box", AutoPattern.BOX);
         autoPatternChooser.addOption("Path Test", AutoPattern.PATH_TEST_THING);
-        autoPatternChooser.addOption("Vlad no carried", AutoPattern.DRIVE_FORWARD_AND_OUTAKE_L1);
+        autoPatternChooser.addOption("Actual Auto", AutoPattern.DRIVE_FORWARD_AND_OUTAKE_L1);
 
         waitTimeChooser.setDefaultOption("No wait", 0);
         SmartDashboard.putData("Auto Wait Time", waitTimeChooser);
@@ -94,7 +95,8 @@ public class OperatorInput extends SubsystemBase {
         new Trigger(() -> isOutTake())
             .onTrue(new CoralCommandOutake(coralSubsystem));
 
-
+        new Trigger(() -> operatorController.getXButton())
+            .onTrue(new CoralCommandEject(coralSubsystem));
 
         // Elevator Level setter
         // Configure the DPAD to drive one meter on a heading
