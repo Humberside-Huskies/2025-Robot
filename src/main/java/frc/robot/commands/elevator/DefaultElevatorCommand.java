@@ -1,11 +1,6 @@
 package frc.robot.commands.elevator;
 
-import frc.robot.Constants.ElevatorConstants;
-<<<<<<< Updated upstream
-import frc.robot.OperatorInput;
-=======
 import frc.robot.Input.OperatorInput;
->>>>>>> Stashed changes
 import frc.robot.commands.LoggingCommand;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.LightsSubsystem;
@@ -31,11 +26,13 @@ public class DefaultElevatorCommand extends LoggingCommand {
         addRequirements(elevatorSubsystem);
     }
 
-<<<<<<< Updated upstream
+    <<<<<<<
+
+    Updated upstream
 
 
-=======
->>>>>>> Stashed changes
+    =======>>>>>>>Stashed changes
+
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {

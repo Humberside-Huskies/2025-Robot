@@ -55,11 +55,12 @@ public class DefaultVisionCommand extends LoggingCommand {
 =======
 
         if (visionSubsystem.getAmbiguity() > VisionConstants.AMBIGUITY_THRESHOLD_MEGATAG) {
-            System.out.println("Using Encoders");
+            System.out.println("Using Limelight");
             driveSubsystem.setPose(visionSubsystem.getBotPose());
             return;
         }
 
+        System.out.println("Using Encoders");
         driveSubsystem.updateOdometry();
 >>>>>>> Stashed changes
     }
@@ -74,8 +75,5 @@ public class DefaultVisionCommand extends LoggingCommand {
     public void end(boolean interrupted) {
 
         logCommandEnd(interrupted);
-
-        // Stop the robot if required
-        driveSubsystem.setMotorSpeeds(0, 0);
     }
 }

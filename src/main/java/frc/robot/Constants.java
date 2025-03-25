@@ -40,7 +40,7 @@ public final class Constants {
     }
 
     public static final class ClimbConstants {
-        public static final int    PRIMARY_MOTOR_PORT  = 50;
+        public static final int    PRIMARY_MOTOR_PORT  = 40;
 
         public static final double CLIMBER_MOTOR_SPEED = 0.5;
         public static final double RETRACT_MOTOR_SPEED = -0.65;
@@ -53,8 +53,8 @@ public final class Constants {
         }
 
         // NOTE: Follower motors are at CAN_ID+1
-        public static final int     LEFT_MOTOR_CAN_ID             = 10;
-        public static final int     RIGHT_MOTOR_CAN_ID            = 20;
+        public static final int     LEFT_MOTOR_CAN_ID             = 20;
+        public static final int     RIGHT_MOTOR_CAN_ID            = 10;
 
         public static final boolean LEFT_MOTOR_INVERTED           = false;
         public static final boolean RIGHT_MOTOR_INVERTED          = true;
@@ -136,13 +136,17 @@ public final class Constants {
             }
         };
 
-<<<<<<< Updated upstream
+        <<<<<<<
+
+        Updated upstream
     }
 
     public static final class CoralConstants {
         public static final int     CORAL_MOTOR_CAN_ID       = 50;
         public static final boolean MOTOR_INVERTED           = false;
-        public static final double  INTAKE_SPEED             = 0.3;
+        public static final double  INTAKE_SPEED             = 0.2;
+        public static final double  OUTTAKE_SPEED            = 0.3;
+
 
         public static final double  HEIGHT_L1_ENCODER_COUNTS = 10;
         public static final double  HEIGHT_L2_ENCODER_COUNTS = 38.45;
@@ -199,5 +203,20 @@ public final class Constants {
         public static final double ReefHeightMeters            = 0.308;
         public static final double ProcessorHeightMeters       = 1.301;
         public static final double BargeHeightMeters           = 1.868;
+
+        public enum ReefOffsetAngle {
+            Right(15),
+            Left(-15);
+
+            private double offset;
+
+            private ReefOffsetAngle(double offset) {
+                this.offset = offset;
+            }
+
+            public double getOffset() {
+                return offset;
+            }
+        }
     }
 }

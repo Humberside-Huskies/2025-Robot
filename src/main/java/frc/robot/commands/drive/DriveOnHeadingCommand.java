@@ -120,7 +120,7 @@ public class DriveOnHeadingCommand extends LoggingCommand {
         double pidAdjust = error * DriveConstants.GYRO_PID_KP;
 
         // Limit the pid adjustment to 0.5
-        pidAdjust = Math.min(Math.abs(pidAdjust), 0.5) * Math.signum(pidAdjust);
+        pidAdjust = Math.min(Math.abs(pidAdjust), 0.1) * Math.signum(pidAdjust);
 
         double leftSpeed  = speed + pidAdjust;
         double rightSpeed = speed - pidAdjust;

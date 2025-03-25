@@ -15,6 +15,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     private double[]     rawfiducials;
 
+
     public VisionSubsystem(LightsSubsystem lightsSubsystem) {
         limelightTable = NetworkTableInstance.getDefault().getTable("limelight");
     }
@@ -71,6 +72,6 @@ public class VisionSubsystem extends SubsystemBase {
         // Create an appropriate text readable string describing the state of the
         // subsystem
 
-        return "Vlad is gsay";
+        return "Vlad was working in this file";
     }
 }

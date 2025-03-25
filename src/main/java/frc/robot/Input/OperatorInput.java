@@ -5,34 +5,18 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-<<<<<<< Updated upstream:src/main/java/frc/robot/OperatorInput.java
 import edu.wpi.first.wpilibj2.command.Command;
-=======
->>>>>>> Stashed changes:src/main/java/frc/robot/Input/OperatorInput.java
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.AutoConstants.AutoPattern;
 import frc.robot.Constants.DriveConstants.DriveMode;
 import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.Constants.OperatorInputConstants;
-import frc.robot.commands.CancelCommand;
-<<<<<<< Updated upstream:src/main/java/frc/robot/OperatorInput.java
-import frc.robot.commands.GameController;
 import frc.robot.commands.coral.CoralCommandIntake;
 import frc.robot.commands.coral.CoralCommandOutake;
 import frc.robot.commands.elevator.SetElevatorLevelCommand;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.ElevatorSubsystem;
-=======
-import frc.robot.commands.coral.CoralCommandIntake;
-import frc.robot.commands.coral.CoralCommandOutake;
-import frc.robot.commands.elevator.SetElevatorLevelCommand;
-import frc.robot.commands.vision.DriveToAprilTag;
-import frc.robot.subsystems.CoralSubsystem;
-import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
->>>>>>> Stashed changes:src/main/java/frc/robot/Input/OperatorInput.java
+import frc.robot.subsystems.ElevatorSubsystem;>>>>>>>Stashed changes:src/main/java/frc/robot/Input/OperatorInput.java
 
 /**
  * The DriverController exposes all driver functions
@@ -45,13 +29,12 @@ public class OperatorInput extends SubsystemBase {
     private final GameController operatorController;
 
     // Auto Setup Choosers
-    SendableChooser<DriveMode>   driveModeChooser = new SendableChooser<>();
-<<<<<<< Updated upstream:src/main/java/frc/robot/OperatorInput.java
-    SendableChooser<Command>     autoChooser      = new SendableChooser<>();
-=======
-    SendableChooser<Integer>     waitTimeChooser  = new SendableChooser<>();
-    SendableChooser<AutoPattern> autoChooser      = new SendableChooser<>();
->>>>>>> Stashed changes:src/main/java/frc/robot/Input/OperatorInput.java
+    SendableChooser<DriveMode>   driveModeChooser = new SendableChooser<>();<<<<<<<
+    Updated                      upstream:src/main/java/frc/robot/OperatorInput.java
+    SendableChooser<Command>autoChooser=new SendableChooser<>();=======
+    SendableChooser<Integer>     waitTimeChooser = new SendableChooser<>();
+    SendableChooser<AutoPattern> autoChooser      = new SendableChooser<>();>>>>>>>
+    Stashed                      changes:src/main/java/frc/robot/Input/OperatorInput.java
 
     /**
      * Construct an OperatorInput class that is fed by a DriverController and optionally an
@@ -127,7 +110,8 @@ public class OperatorInput extends SubsystemBase {
         new Trigger(() -> isOutTake())
             .onTrue(new CoralCommandOutake(coralSubsystem));
 
-
+        new Trigger(() -> operatorController.getXButton())
+            .onTrue(new CoralCommandEject(coralSubsystem));
 
         // Elevator Level setter
         // Configure the DPAD to drive one meter on a heading
@@ -219,6 +203,8 @@ public class OperatorInput extends SubsystemBase {
         return driverController.getRightBumperButton();
     }
 
+
+
     public double getLeftSpeed() {
         return driverController.getLeftY();
     }
@@ -290,7 +276,9 @@ public class OperatorInput extends SubsystemBase {
         return value;
     }
 
-<<<<<<< Updated upstream:src/main/java/frc/robot/OperatorInput.java
+    <<<<<<<
+
+    Updated upstream:src/main/java/frc/robot/OperatorInput.java
     // public double isElevatorRetract() {
     // double value = operatorController.getRightTriggerAxis();
 
@@ -299,8 +287,9 @@ public class OperatorInput extends SubsystemBase {
     // return value;
     // }
 
-=======
->>>>>>> Stashed changes:src/main/java/frc/robot/Input/OperatorInput.java
+    =======>>>>>>>
+    Stashed changes:src/main/java/frc/robot/Input/OperatorInput.java
+
     public boolean isResetEncoders() {
         return driverController.getBackButton();
     }
@@ -317,12 +306,14 @@ public class OperatorInput extends SubsystemBase {
         return driverController.getRightTriggerAxis();
     }
 
-<<<<<<< Updated upstream:src/main/java/frc/robot/OperatorInput.java
+    <<<<<<<
+
+    Updated upstream:src/main/java/frc/robot/OperatorInput.java
 
 
     // public boolean
 
-}
-=======
-}
->>>>>>> Stashed changes:src/main/java/frc/robot/Input/OperatorInput.java
+    }=======
+}>>>>>>>
+Stashed changes:src/main/java/frc/robot/Input/OperatorInput.
+java
