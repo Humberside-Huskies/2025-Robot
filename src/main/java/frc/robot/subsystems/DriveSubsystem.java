@@ -1,9 +1,5 @@
 package frc.robot.subsystems;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.controllers.PPLTVController;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -16,14 +12,10 @@ import com.studica.frc.AHRS;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-<<<<<<< Updated upstream
-=======
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
->>>>>>> Stashed changes
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
@@ -32,9 +24,7 @@ import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotMotor;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotWheelSize;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Robot;
 
@@ -182,76 +172,16 @@ public class DriveSubsystem extends SubsystemBase {
             odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(navXGyro.getAngle()), getLeftEncoder(), 0);
 <<<<<<< Updated upstream
         }
-
-        setupPathPlanner();
     }
 
-    public void setupPathPlanner() {
-        try {
-            AutoConstants.config = RobotConfig.fromGUISettings();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+    // Calculate robot-relative forward velocity (average of left and right speeds)
+    double vx   = (leftSpeed + rightSpeed) / 2;
 
-        // Configure AutoBuilder last
-        AutoBuilder.configure(
-            this::getPose, // Robot pose supplier
-            this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
-            this::getWheelSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-            (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE
-                                                                  // ChassisSpeeds. Also optionally outputs individual module
-                                                                  // feedforwards
-            new PPLTVController(0.02), // PPLTVController is the built in path following controller for differential drive trains
-            AutoConstants.config, // The robot configuration
-            () -> {
-                // Boolean supplier that controls when the path will be mirrored for the red alliance
-                // This will flip the path being followed to the red side of the field.
-                // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+    // Calculate robot-relative rotational velocity (difference of left and right speeds)
+    double omega = (rightSpeed - leftSpeed) / DriveConstants.ROBOT_WIDTH;
 
-                var alliance = DriverStation.getAlliance();
-                if (alliance.isPresent()) {
-                    return alliance.get() == DriverStation.Alliance.Red;
-                }
-                return false;
-            },
-            this // Reference to this subsystem to set requirements
-        );
-    }
-
-    public void resetOdometry(Pose2d pose) {
-        // resetEncoders();
-        // navXGyro.reset();
-        // odometry.resetPosition(navXGyro.getRotation2d(), 0, 0, pose);
-    }
-
-    public Command getPPAutoCommand(String autoName) {
-        return new PathPlannerAuto(autoName);
-    }
-
-    public ChassisSpeeds getWheelSpeeds() {
-        // Get the current left and right wheel speeds (in meters per second)
-        double leftSpeed;
-        double rightSpeed;
-
-        if (Robot.isSimulation()) {
-            // TODO: VLAD GET THIS TO WORk
-            leftSpeed = simLeftEncoder / DriveConstants.CM_PER_ENCODER_COUNT * 100;
-            rightSpeed = simRightEncoder / DriveConstants.CM_PER_ENCODER_COUNT * 100;
-        }
-        else {
-            leftSpeed  = getLeftEncoderSpeed();                                // Left wheel speed (m/s)
-            rightSpeed = getRightEncoderSpeed();                               // Right wheel speed (m/s)
-        }
-
-        // Calculate robot-relative forward velocity (average of left and right speeds)
-        double vx         = (leftSpeed + rightSpeed) / 2;
-
-        // Calculate robot-relative rotational velocity (difference of left and right speeds)
-        double omega      = (rightSpeed - leftSpeed) / DriveConstants.ROBOT_WIDTH;
-
-        // Return the chassis speeds (in meters per second and radians per second)
-        return new ChassisSpeeds(vx, 0, omega); // Assuming no lateral speed (vy = 0)
+    // Return the chassis speeds (in meters per second and radians per second)
+    return new ChassisSpeeds(vx,0,omega); // Assuming no lateral speed (vy = 0)
     }
 
     public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
@@ -270,8 +200,7 @@ public class DriveSubsystem extends SubsystemBase {
         // Set the speeds for the motors
         setMotorSpeeds(leftSpeed * 0.05, rightSpeed * 0.05);
 =======
-        }
-        kinematics = new DifferentialDriveKinematics(DriveConstants.ROBOT_WIDTH);
+        }kinematics=new DifferentialDriveKinematics(DriveConstants.ROBOT_WIDTH);
 
     }
 
