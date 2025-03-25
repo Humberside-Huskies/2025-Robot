@@ -1,27 +1,33 @@
 package frc.robot.commands.drive;
 
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.commands.LoggingCommand;
 import frc.robot.subsystems.DriveSubsystem;
 
-public class DriveToTargetCommand extends SequentialCommandGroup {
+public class ForwardToTargetCommand extends LoggingCommand {
 
     private final double         targetX;
     private final double         targetY;
 
+    private final PIDController  xController = new PIDController(0.1, 0, 0);
+    private final PIDController  yController = new PIDController(0.1, 0, 0);
 
     private final DriveSubsystem driveSubsystem;
 
-    public DriveToTargetCommand(double targetX, double targetY, DriveSubsystem driveSubsystem) {
+    public ForwardToTargetCommand(double targetX, double targetY, DriveSubsystem driveSubsystem) {
         this.targetX        = targetX;
         this.targetY        = targetY;
         this.driveSubsystem = driveSubsystem;
 
-        addCommands(new RotateToTargetCommand(targetX, targetY, driveSubsystem));
-        addCommands(new ForwardToTargetCommand(targetX, targetY, driveSubsystem));
+        addRequirements(driveSubsystem);
 
+        // set tolerances of x and y
+        xController.setTolerance(1);
+        yController.setTolerance(1);
     }
 
-<<<<<<< Updated upstream
     @Override
     public void execute() {
         Pose2d currPose = driveSubsystem.getPose();
@@ -68,6 +74,4 @@ public class DriveToTargetCommand extends SequentialCommandGroup {
         // when the robot is close enough to target with tolerance
         return xController.atSetpoint() && yController.atSetpoint();
     }
-=======
->>>>>>> Stashed changes
 }

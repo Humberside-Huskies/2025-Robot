@@ -1,7 +1,11 @@
 package frc.robot.commands.elevator;
 
 import frc.robot.Constants.ElevatorConstants;
+<<<<<<< Updated upstream
 import frc.robot.OperatorInput;
+=======
+import frc.robot.Input.OperatorInput;
+>>>>>>> Stashed changes
 import frc.robot.commands.LoggingCommand;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.LightsSubsystem;
@@ -27,8 +31,11 @@ public class DefaultElevatorCommand extends LoggingCommand {
         addRequirements(elevatorSubsystem);
     }
 
+<<<<<<< Updated upstream
 
 
+=======
+>>>>>>> Stashed changes
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
@@ -40,16 +47,25 @@ public class DefaultElevatorCommand extends LoggingCommand {
     public void execute() {
         double elevatorJoystick = operatorInput.ElevatorJoystick();
 
+<<<<<<< Updated upstream
 
         // Climbing
         if (elevatorJoystick > 0) {
             elevatorSubsystem.setMotorSpeeds(ElevatorConstants.ELEVATOR_CONTRACT_SPEED * Math.abs(elevatorJoystick));
             elevatorSubsystem.manual_elevator_on = true;
+=======
+        // Climbing
+        if (elevatorJoystick > 0) {
+            elevatorSubsystem.setMotorSpeeds(ElevatorConstants.ELEVATOR_CONTRACT_SPEED * Math.abs(elevatorJoystick));
+>>>>>>> Stashed changes
         }
         // Retracting
         else if (elevatorJoystick < 0) {
             elevatorSubsystem.setMotorSpeeds(ElevatorConstants.ELEVATOR_RETRACT_SPEED * Math.abs(elevatorJoystick));
+<<<<<<< Updated upstream
             elevatorSubsystem.manual_elevator_on = true;
+=======
+>>>>>>> Stashed changes
         }
         else {
             if (elevatorSubsystem.getEncoder() > 10)
@@ -60,7 +76,10 @@ public class DefaultElevatorCommand extends LoggingCommand {
     }
 
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {

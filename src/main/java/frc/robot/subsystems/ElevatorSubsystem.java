@@ -123,4 +123,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         return sb.toString();
     }
+<<<<<<< Updated upstream
 }
+=======
+}
+>>>>>>> Stashed changes

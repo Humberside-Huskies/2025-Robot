@@ -13,7 +13,11 @@
         {
           "type": "wait",
           "data": {
+<<<<<<< Updated upstream
             "waitTime": 2.0
+=======
+            "waitTime": 5.0
+>>>>>>> Stashed changes
           }
         },
         {

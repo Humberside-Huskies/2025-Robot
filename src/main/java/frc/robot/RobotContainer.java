@@ -5,6 +5,11 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
+<<<<<<< Updated upstream
+=======
+import frc.robot.Input.OperatorInput;
+import frc.robot.commands.auto.AutoCommand;
+>>>>>>> Stashed changes
 import frc.robot.commands.drive.DefaultDriveCommand;
 import frc.robot.commands.elevator.DefaultElevatorCommand;
 import frc.robot.commands.vision.DefaultVisionCommand;
@@ -55,7 +60,11 @@ public class RobotContainer {
             new DefaultVisionCommand(driveSubsystem, visionSubsystem));
 
         // Configure the button bindings - pass in all subsystems
+<<<<<<< Updated upstream
         operatorInput.configureButtonBindings(driveSubsystem, elevatorSubsystem, coralSubsystem);
+=======
+        operatorInput.configureButtonBindings(driveSubsystem, elevatorSubsystem, coralSubsystem, visionSubsystem);
+>>>>>>> Stashed changes
     }
 
     /**
@@ -64,6 +73,11 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
+<<<<<<< Updated upstream
         return operatorInput.getAutoCommand();
+=======
+        return new AutoCommand(operatorInput, driveSubsystem, coralSubsystem, elevatorSubsystem, lightsSubsystem,
+            visionSubsystem);
+>>>>>>> Stashed changes
     }
 }

@@ -1,25 +1,32 @@
 package frc.robot.commands.coral;
 
+
 import frc.robot.Constants.CoralConstants;
 import frc.robot.commands.LoggingCommand;
 import frc.robot.subsystems.CoralSubsystem;
 
-public class CoralCommandOutake extends LoggingCommand {
+
+public class CoralCommandEject extends LoggingCommand {
+
 
     private CoralSubsystem coralSubsystem;
+
 
     /**
      * Creates a new ExampleCommand.
      *
      * @param climbSubsystem The subsystem used by this command.
      */
-    public CoralCommandOutake(CoralSubsystem coralSubsystem) {
+    public CoralCommandEject(CoralSubsystem coralSubsystem) {
+
 
         this.coralSubsystem = coralSubsystem;
+
 
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(coralSubsystem);
     }
+
 
     // Called when the command is initially scheduled.
     @Override
@@ -27,24 +34,23 @@ public class CoralCommandOutake extends LoggingCommand {
         logCommandStart();
     }
 
+
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-<<<<<<< Updated upstream
-        coralSubsystem.setMotorSpeeds(-CoralConstants.INTAKE_SPEED);
-=======
-        coralSubsystem.setMotorSpeeds(-CoralConstants.OUTTAKE_SPEED);
->>>>>>> Stashed changes
+        coralSubsystem.setMotorSpeeds(CoralConstants.INTAKE_SPEED * 0.3);
     }
+
 
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-
-        if (hasElapsed(1))
+        if (hasElapsed(2)) {
             return true;
+        }
         return false;
     }
+
 
     // Called once the command ends or is interrupted.
     @Override

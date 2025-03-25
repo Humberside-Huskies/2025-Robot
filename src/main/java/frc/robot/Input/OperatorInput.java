@@ -1,17 +1,21 @@
-package frc.robot;
+package frc.robot.Input;
 
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+<<<<<<< Updated upstream:src/main/java/frc/robot/OperatorInput.java
 import edu.wpi.first.wpilibj2.command.Command;
+=======
+>>>>>>> Stashed changes:src/main/java/frc/robot/Input/OperatorInput.java
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveConstants.DriveMode;
 import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.Constants.OperatorInputConstants;
 import frc.robot.commands.CancelCommand;
+<<<<<<< Updated upstream:src/main/java/frc/robot/OperatorInput.java
 import frc.robot.commands.GameController;
 import frc.robot.commands.coral.CoralCommandIntake;
 import frc.robot.commands.coral.CoralCommandOutake;
@@ -19,6 +23,16 @@ import frc.robot.commands.elevator.SetElevatorLevelCommand;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+=======
+import frc.robot.commands.coral.CoralCommandIntake;
+import frc.robot.commands.coral.CoralCommandOutake;
+import frc.robot.commands.elevator.SetElevatorLevelCommand;
+import frc.robot.commands.vision.DriveToAprilTag;
+import frc.robot.subsystems.CoralSubsystem;
+import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
+>>>>>>> Stashed changes:src/main/java/frc/robot/Input/OperatorInput.java
 
 /**
  * The DriverController exposes all driver functions
@@ -32,18 +46,43 @@ public class OperatorInput extends SubsystemBase {
 
     // Auto Setup Choosers
     SendableChooser<DriveMode>   driveModeChooser = new SendableChooser<>();
+<<<<<<< Updated upstream:src/main/java/frc/robot/OperatorInput.java
     SendableChooser<Command>     autoChooser      = new SendableChooser<>();
+=======
+    SendableChooser<Integer>     waitTimeChooser  = new SendableChooser<>();
+    SendableChooser<AutoPattern> autoChooser      = new SendableChooser<>();
+>>>>>>> Stashed changes:src/main/java/frc/robot/Input/OperatorInput.java
 
     /**
      * Construct an OperatorInput class that is fed by a DriverController and optionally an
      * OperatorController.
      */
     public OperatorInput() {
+<<<<<<< Updated upstream:src/main/java/frc/robot/OperatorInput.java
 
+=======
+>>>>>>> Stashed changes:src/main/java/frc/robot/Input/OperatorInput.java
         driverController   = new GameController(OperatorInputConstants.DRIVER_CONTROLLER_PORT,
             OperatorInputConstants.DRIVER_CONTROLLER_DEADBAND);
         operatorController = new GameController(OperatorInputConstants.OPERATOR_CONTROLLER_PORT,
             OperatorInputConstants.OPERATOR_CONTROLLER_DEADBAND);
+<<<<<<< Updated upstream:src/main/java/frc/robot/OperatorInput.java
+=======
+
+        // Initialize the dashboard selectors
+        autoChooser.setDefaultOption("Do Nothing", AutoPattern.DO_NOTHING);
+        SmartDashboard.putData("Auto Pattern", autoChooser);
+        autoChooser.addOption("Drive Forward", AutoPattern.DRIVE_FORWARD);
+        autoChooser.addOption("Box", AutoPattern.BOX);
+        autoChooser.addOption("Path Test", AutoPattern.PATH_TEST_THING);
+        autoChooser.addOption("Actual Auto", AutoPattern.DRIVE_FORWARD_AND_OUTAKE_L1);
+
+        waitTimeChooser.setDefaultOption("No wait", 0);
+        SmartDashboard.putData("Auto Wait Time", waitTimeChooser);
+        waitTimeChooser.addOption("1 second", 1);
+        waitTimeChooser.addOption("3 seconds", 3);
+        waitTimeChooser.addOption("5 seconds", 5);
+>>>>>>> Stashed changes:src/main/java/frc/robot/Input/OperatorInput.java
 
         driveModeChooser.setDefaultOption("Arcade", DriveMode.ARCADE);
         SmartDashboard.putData("Drive Mode", driveModeChooser);
@@ -62,7 +101,11 @@ public class OperatorInput extends SubsystemBase {
      * @param driveSubsystem
      */
     public void configureButtonBindings(DriveSubsystem driveSubsystem,
+<<<<<<< Updated upstream:src/main/java/frc/robot/OperatorInput.java
         ElevatorSubsystem elevatorSubsystem, CoralSubsystem coralSubsystem) {
+=======
+        ElevatorSubsystem elevatorSubsystem, CoralSubsystem coralSubsystem, VisionSubsystem visionSubsystem) {
+>>>>>>> Stashed changes:src/main/java/frc/robot/Input/OperatorInput.java
 
         // Cancel Command - cancels all running commands on all subsystems
         new Trigger(() -> isCancel())
@@ -71,9 +114,12 @@ public class OperatorInput extends SubsystemBase {
         new Trigger(() -> operatorController.getStartButton())
             .onTrue(new CancelCommand(this, driveSubsystem, elevatorSubsystem));
 
+<<<<<<< Updated upstream:src/main/java/frc/robot/OperatorInput.java
         // new Trigger(() -> driveToAprilTag())
         // .onTrue(new AlignToAprilTagCommand(driveSubsystem, visionSubsystem));
 
+=======
+>>>>>>> Stashed changes:src/main/java/frc/robot/Input/OperatorInput.java
         // Coral Shooter
         new Trigger(() -> isIntake())
             .onTrue(new CoralCommandIntake(coralSubsystem));
@@ -90,6 +136,7 @@ public class OperatorInput extends SubsystemBase {
 
         new Trigger(() -> operatorController.getPOV() == 90)
             .onTrue(new SetElevatorLevelCommand(ElevatorPosition.CORAL_HEIGHT_L2_ENCODER_COUNT, elevatorSubsystem));
+<<<<<<< Updated upstream:src/main/java/frc/robot/OperatorInput.java
 
         new Trigger(() -> operatorController.getPOV() == 180)
             .onTrue(new SetElevatorLevelCommand(ElevatorPosition.CORAL_HEIGHT_L3_ENCODER_COUNT, elevatorSubsystem));
@@ -117,11 +164,31 @@ public class OperatorInput extends SubsystemBase {
 
         NamedCommands.registerCommand("shoot", new CoralCommandOutake(coralSubsystem));
         NamedCommands.registerCommand("intake", new CoralCommandIntake(coralSubsystem));
+=======
+
+        new Trigger(() -> operatorController.getPOV() == 180)
+            .onTrue(new SetElevatorLevelCommand(ElevatorPosition.CORAL_HEIGHT_L3_ENCODER_COUNT, elevatorSubsystem));
+
+        new Trigger(() -> operatorController.getPOV() == 270)
+            .onTrue(new SetElevatorLevelCommand(ElevatorPosition.CORAL_HEIGHT_L4_ENCODER_COUNT, elevatorSubsystem));
+
+        new Trigger(() -> driverController.getPOV() == 0)
+            .onTrue(new DriveToAprilTag(driveSubsystem, visionSubsystem));
+
+        new Trigger(() -> driverController.getPOV() == 180)
+            .onTrue(new DriveToAprilTag(driveSubsystem, visionSubsystem));
+    }
+
+
+    public AutoPattern getAutoPattern() {
+        return autoChooser.getSelected();
+>>>>>>> Stashed changes:src/main/java/frc/robot/Input/OperatorInput.java
     }
 
     public Command getAutoCommand() {
         return autoChooser.getSelected();
     }
+
 
     /*
      * Cancel Command support
@@ -223,6 +290,7 @@ public class OperatorInput extends SubsystemBase {
         return value;
     }
 
+<<<<<<< Updated upstream:src/main/java/frc/robot/OperatorInput.java
     // public double isElevatorRetract() {
     // double value = operatorController.getRightTriggerAxis();
 
@@ -231,6 +299,8 @@ public class OperatorInput extends SubsystemBase {
     // return value;
     // }
 
+=======
+>>>>>>> Stashed changes:src/main/java/frc/robot/Input/OperatorInput.java
     public boolean isResetEncoders() {
         return driverController.getBackButton();
     }
@@ -247,8 +317,12 @@ public class OperatorInput extends SubsystemBase {
         return driverController.getRightTriggerAxis();
     }
 
+<<<<<<< Updated upstream:src/main/java/frc/robot/OperatorInput.java
 
 
     // public boolean
 
 }
+=======
+}
+>>>>>>> Stashed changes:src/main/java/frc/robot/Input/OperatorInput.java

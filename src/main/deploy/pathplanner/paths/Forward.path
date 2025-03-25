@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.456352459016394,
-        "y": 6.080891393442624
+        "x": 9.849,
+        "y": 2.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.879686734021526,
-        "y": 5.495032737901504
+        "x": 10.922074468085107,
+        "y": 3.2431848404255312
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.25061475409836,
-        "y": 5.25373975409836
+        "x": 10.501994680851064,
+        "y": 6.452127659574468
       },
       "prevControl": {
-        "x": 5.826024590163935,
-        "y": 6.0928790983606556
+        "x": 10.49032579787234,
+        "y": 3.6982712765957437
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,27 +33,22 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-<<<<<<< Updated upstream
     "maxVelocity": 1.0,
-    "maxAcceleration": 0.5,
-=======
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
->>>>>>> Stashed changes
-    "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0,
-    "nominalVoltage": 12.0,
+    "maxAcceleration": 1.0,
+    "maxAngularVelocity": 300.0,
+    "maxAngularAcceleration": 400.0,
+    "nominalVoltage": 6.0,
     "unlimited": false
   },
   "goalEndState": {
     "velocity": 0,
     "rotation": 0.0
   },
-  "reversed": false,
+  "reversed": true,
   "folder": null,
   "idealStartingState": {
-    "velocity": 0,
+    "velocity": 0.0,
     "rotation": 0.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

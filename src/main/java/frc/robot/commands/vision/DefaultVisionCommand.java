@@ -1,5 +1,6 @@
 package frc.robot.commands.vision;
 
+import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.LoggingCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
@@ -24,8 +25,13 @@ public class DefaultVisionCommand extends LoggingCommand {
         this.visionSubsystem = visionSubsystem;
         this.driveSubsystem  = driveSubsystem;
 
+<<<<<<< Updated upstream
         // Add required subsystems
         addRequirements(visionSubsystem);
+=======
+        addRequirements(visionSubsystem);
+
+>>>>>>> Stashed changes
     }
 
     // Called when the command is initially scheduled.
@@ -38,6 +44,7 @@ public class DefaultVisionCommand extends LoggingCommand {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
+<<<<<<< Updated upstream
         // if (visionSubsystem.getAmbiguity() > VisionConstants.AMBIGUITY_THRESHOLD_MEGATAG) {
         // driveSubsystem.setPose(visionSubsystem.getBotPose());
         // return;
@@ -45,6 +52,16 @@ public class DefaultVisionCommand extends LoggingCommand {
 
         // System.out.println("Using Encoders");
         // driveSubsystem.updateOdometry();
+=======
+
+        if (visionSubsystem.getAmbiguity() > VisionConstants.AMBIGUITY_THRESHOLD_MEGATAG) {
+            System.out.println("Using Encoders");
+            driveSubsystem.setPose(visionSubsystem.getBotPose());
+            return;
+        }
+
+        driveSubsystem.updateOdometry();
+>>>>>>> Stashed changes
     }
 
     // Returns true when the command should end.

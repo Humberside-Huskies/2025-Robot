@@ -3,41 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.095,
-        "y": 5.212
+        "x": 5.965,
+        "y": 6.211237157534247
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.806701669416446,
-        "y": 4.771967379043769
+        "x": 6.941669520547946,
+        "y": 6.646982020547945
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.1837090163934425,
-        "y": 6.080891393442624
+        "x": 5.064,
+        "y": 5.09933647260274
       },
       "prevControl": {
-        "x": 3.673282960597037,
-        "y": 6.31368262468066
-      },
-      "nextControl": {
-        "x": 4.532853369760906,
-        "y": 5.921656293711274
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 1.4025614754131863,
-        "y": 7.087858606563409
-      },
-      "prevControl": {
-        "x": 1.090881147544334,
-        "y": 8.022899590169965
+        "x": 4.064,
+        "y": 5.09933647260274
       },
       "nextControl": null,
       "isLocked": false,
@@ -49,13 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-<<<<<<< Updated upstream
-    "maxVelocity": 1.0,
-    "maxAcceleration": 0.5,
-=======
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
->>>>>>> Stashed changes
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,

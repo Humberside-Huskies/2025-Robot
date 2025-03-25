@@ -2,7 +2,7 @@ package frc.robot.commands.drive;
 
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.DriveConstants.DriveMode;
-import frc.robot.OperatorInput;
+import frc.robot.Input.OperatorInput;
 import frc.robot.commands.LoggingCommand;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -58,7 +58,11 @@ public class DefaultDriveCommand extends LoggingCommand {
         }
         else {
 
+<<<<<<< Updated upstream
             double speed = -operatorInput.getSpeed();
+=======
+            double speed = operatorInput.getSpeed();
+>>>>>>> Stashed changes
             double turn  = operatorInput.getTurn() * 1.2;
 
             setArcadeDriveMotorSpeeds(speed, turn, driveScalingFactor);

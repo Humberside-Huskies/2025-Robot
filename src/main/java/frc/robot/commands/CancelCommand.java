@@ -1,6 +1,6 @@
 package frc.robot.commands;
 
-import frc.robot.OperatorInput;
+import frc.robot.Input.OperatorInput;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 
