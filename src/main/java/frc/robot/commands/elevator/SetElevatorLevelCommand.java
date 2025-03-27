@@ -54,7 +54,7 @@ public class SetElevatorLevelCommand extends LoggingCommand {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        if (elevatorSubsystem.manual_elevator_on || Math.abs(error) < ElevatorConstants.HOLD_TOLERANCE)
+        if (Math.abs(error) < ElevatorConstants.HOLD_TOLERANCE)
             return true;
         return false;
     }

@@ -11,10 +11,8 @@ import com.studica.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
@@ -138,12 +136,6 @@ public class DriveSubsystem extends SubsystemBase {
         config.follow(rightPrimaryMotor);
         rightFollowerMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        resetEncoders();
-
-        // Reset the Gyro Heading
-        if (Robot.isReal())
-            resetGyro();
-
         // Add the field elements for robot simulations
         if (RobotBase.isSimulation()) {
 
@@ -169,97 +161,16 @@ public class DriveSubsystem extends SubsystemBase {
         }
         else {
             navXGyro = new NavXGyro();
-            odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(navXGyro.getAngle()), getLeftEncoder(), 0);
-<<<<<<< Updated upstream
+            odometry = new DifferentialDriveOdometry(new Rotation2d().fromDegrees(0), 0, 0);
         }
-    }
-
-    // Calculate robot-relative forward velocity (average of left and right speeds)
-    double vx   = (leftSpeed + rightSpeed) / 2;
-
-    // Calculate robot-relative rotational velocity (difference of left and right speeds)
-    double omega = (rightSpeed - leftSpeed) / DriveConstants.ROBOT_WIDTH;
-
-    // Return the chassis speeds (in meters per second and radians per second)
-    return new ChassisSpeeds(vx,0,omega); // Assuming no lateral speed (vy = 0)
-    }
-
-    public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
-        // Get the robot-relative velocities from the chassisSpeeds
-        double xSpeed     = chassisSpeeds.vxMetersPerSecond;                   // Forward velocity (m/s)
-        // double ySpeed = chassisSpeeds.vyMetersPerSecond; // Sideways velocity (m/s)
-        double rotSpeed   = chassisSpeeds.omegaRadiansPerSecond;               // Rotational velocity (rad/s)
-
-        // Convert the robot-relative velocities into wheel speeds using your drive kinematics
-        // You'll need to write the math for converting these velocities to individual left/right motor speeds.
-        // This could involve simple trigonometry based on the robot's geometry.
-
-        double leftSpeed  = xSpeed - rotSpeed * DriveConstants.ROBOT_WIDTH / 2;
-        double rightSpeed = xSpeed + rotSpeed * DriveConstants.ROBOT_WIDTH / 2;
-
-        // Set the speeds for the motors
-        setMotorSpeeds(leftSpeed * 0.05, rightSpeed * 0.05);
-=======
-        }kinematics=new DifferentialDriveKinematics(DriveConstants.ROBOT_WIDTH);
-
-    }
+        kinematics = new DifferentialDriveKinematics(DriveConstants.ROBOT_WIDTH);
 
 
-    public void resetOdometry(Pose2d pose) {
+        resetEncoders();
 
-        if (Robot.isSimulation()) {
-            drivetrainSim.setPose(pose);
+        if (Robot.isReal())
+            resetGyro();
 
-            odometry.resetPosition(
-                pose.getRotation(),
-                leftEncoder.getPosition(),
-                rightEncoder.getPosition(),
-                pose);
-
-
-        }
-        else {
-            navXGyro.reset();
-            resetEncoders();
-            odometry.resetPosition(
-                navXGyro.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getPosition(), pose);
-
-        }
-
-    }
-
-    public ChassisSpeeds getWheelSpeeds() {
-        double SleftSpeed  = 0;
-        double SrightSpeed = 0;
-
-        if (RobotBase.isReal()) {
-            // Get the current left and right wheel speeds (in meters per second)
-            SleftSpeed  = getLeftEncoderSpeed();  // Left wheel speed (m/s)
-            SrightSpeed = getRightEncoderSpeed(); // Right wheel speed (m/s)
-            // Calculate robot-relative rotational velocity (difference of left and right speeds)
-        }
-
-        if (RobotBase.isSimulation()) {
-            SleftSpeed  = drivetrainSim.getLeftVelocityMetersPerSecond();
-            SrightSpeed = drivetrainSim.getRightVelocityMetersPerSecond();
-            // Calculate robot-relative rotational velocity (difference of left and right speeds)
-
-        }
-
-        return kinematics.toChassisSpeeds(new DifferentialDriveWheelSpeeds(SleftSpeed, SrightSpeed));
-    }
-
-    public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
-        // double KleftSpeed = chassisSpeeds.vxMetersPerSecond
-        // - (chassisSpeeds.omegaRadiansPerSecond * DriveConstants.ROBOT_WIDTH / 2);
-        // double KrightSpeed = chassisSpeeds.vxMetersPerSecond
-        // + (chassisSpeeds.omegaRadiansPerSecond * DriveConstants.ROBOT_WIDTH / 2);
-
-        DifferentialDriveWheelSpeeds wheelSpeeds = kinematics.toWheelSpeeds(chassisSpeeds);
-        setMotorSpeeds(wheelSpeeds.leftMetersPerSecond, wheelSpeeds.rightMetersPerSecond);
-        // Set the speeds for the motors
-        // setMotorSpeeds(KleftSpeed, KrightSpeed);
->>>>>>> Stashed changes
     }
 
 
@@ -271,7 +182,6 @@ public class DriveSubsystem extends SubsystemBase {
      * NOTE: This is not the same as calibrating the gyro.
      */
     public void resetGyro() {
-
 
         navXGyro.reset();
         setGyroHeading(0);
@@ -454,21 +364,10 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public void updateOdometry() {
-        odometry.update(Rotation2d.fromDegrees(getHeading()), getLeftEncoder() * DriveConstants.CM_PER_ENCODER_COUNT / 100.0,
+        odometry.update(Rotation2d.fromDegrees(getHeading()), getLeftEncoder() * DriveConstants.CM_PER_ENCODER_COUNT
+            / 100.0d,
             getRightEncoder()
-                * DriveConstants.CM_PER_ENCODER_COUNT / 100.0);
-    }
-
-    public Pose2d getPose() {
-        return odometry.getPoseMeters();
-    }
-
-    public void setPose(Pose2d pose) {
-        odometry.resetPose(pose);
-    }
-
-    public void updateOdometry() {
-        odometry.update(Rotation2d.fromDegrees(getHeading()), getLeftEncoder(), getRightEncoder());
+                * DriveConstants.CM_PER_ENCODER_COUNT / 100.0d);
     }
 
     /** Resets the drive encoders to zero. */
@@ -513,7 +412,8 @@ public class DriveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Right Velocity", Math.round(getRightEncoderSpeed() * 100) / 100d);
         SmartDashboard.putNumber("Left Velocity", Math.round(getLeftEncoderSpeed() * 100) / 100d);
         SmartDashboard.putNumber("Left Velocity", Math.round(getLeftEncoderSpeed() * 100) / 100d);
-        SmartDashboard.putString("Odometry (M)", odometry.getPoseMeters().getX() + ", " + odometry.getPoseMeters().getY());
+        SmartDashboard.putNumber("Odometry X", Math.round(odometry.getPoseMeters().getX() * 100) / 100d);
+        SmartDashboard.putNumber("Odometry Y", Math.round(odometry.getPoseMeters().getY() * 100) / 100d);
         SmartDashboard.putNumber("Odometry Angle", odometry.getPoseMeters().getRotation().getDegrees());
 
         if (navXGyro != null) {
@@ -560,13 +460,8 @@ public class DriveSubsystem extends SubsystemBase {
         simLeftEncoder  = drivetrainSim.getLeftPositionMeters() * 100 / DriveConstants.CM_PER_ENCODER_COUNT;
         simRightEncoder = drivetrainSim.getRightPositionMeters() * 100 / DriveConstants.CM_PER_ENCODER_COUNT;
 
-<<<<<<< Updated upstream
-        odometry.update(Rotation2d.fromDegrees(simAngle), simLeftEncoder / 100, simRightEncoder / 100);
-        System.out.println(getPose().getX() + " " + getPose().getY());
-=======
         // odometry.update(Rotation2d.fromDegrees(simAngle), simLeftEncoder / 100, simRightEncoder / 100);
         odometry.resetPose(drivetrainSim.getPose());
->>>>>>> Stashed changes
     }
 
     @Override

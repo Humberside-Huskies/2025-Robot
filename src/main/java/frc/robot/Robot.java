@@ -58,6 +58,7 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledInit() {
     }
+        // Tony is gay
 
     @Override
     public void disabledPeriodic() {

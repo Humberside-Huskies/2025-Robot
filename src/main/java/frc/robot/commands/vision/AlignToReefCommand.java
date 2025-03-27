@@ -31,6 +31,8 @@ public class AlignToReefCommand extends LoggingCommand {
         this.visionSubsystem = visionSubsystem;
         this.driveSubsystem  = driveSubsystem;
         this.targetX         = direction.getOffset();
+
+        controllerX.setTolerance(1);
     }
 
     // Called when the command is initially scheduled.
@@ -46,18 +48,17 @@ public class AlignToReefCommand extends LoggingCommand {
     public void execute() {
         double tx = visionSubsystem.getTX();
 
-        if (tx == 0) {
-            // if (visionSubsystem.getTV() == 0) {
+        if (visionSubsystem.getTID() == 0) {
             System.out.println("NO TARGETS FOUND");
             driveSubsystem.setMotorSpeeds(0, 0);
             return;
         }
-
+        // Tony is gay
         double turn = controllerX.calculate(tx, targetX);
-        System.out.println(turn);
+
         // Apply constraints to prevent excessive speed
-        turn = Math.max(-0.5, Math.min(turn, 0.5)); // Clamp turn speed
-        setArcadeDriveMotorSpeeds(0, turn, .7);
+        // turn = Math.max(-0.5, Math.min(turn, 0.5)); // Clamp turn speed
+        setArcadeDriveMotorSpeeds(0, -turn, .7);
     }
 
     private void setArcadeDriveMotorSpeeds(double speed, double turn, double driveScalingFactor) {
@@ -74,6 +75,7 @@ public class AlignToReefCommand extends LoggingCommand {
 
         double leftSpeed  = (speed + turn) * driveScalingFactor;
         double rightSpeed = (speed - turn) * driveScalingFactor;
+        // Tony is gay
 
         driveSubsystem.setMotorSpeeds(leftSpeed, rightSpeed);
     }

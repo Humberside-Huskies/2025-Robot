@@ -42,12 +42,14 @@ public class ClimbSubsystem extends SubsystemBase {
         primaryMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
 
-        resetPrimaryEncoders();
+        resetPrimaryEncoders(); // Tony is gay
+
     }
 
     public double getEncoderDistanceCm() {
         return getEncoder() * DriveConstants.CM_PER_ENCODER_COUNT;
     }
+    // Tony is gay
 
     /**
      * Gets the left velocity.

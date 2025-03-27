@@ -1,11 +1,7 @@
 package frc.robot.commands.coral;
 
 import frc.robot.Constants.CoralConstants;
-<<<<<<< Updated upstream
-import frc.robot.OperatorInput;
-=======
 import frc.robot.Input.OperatorInput;
->>>>>>> Stashed changes
 import frc.robot.commands.LoggingCommand;
 import frc.robot.subsystems.CoralSubsystem;
 

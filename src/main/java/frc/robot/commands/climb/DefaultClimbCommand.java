@@ -1,11 +1,7 @@
 package frc.robot.commands.climb;
 
 import frc.robot.Constants.ClimbConstants;
-<<<<<<< Updated upstream
-import frc.robot.OperatorInput;
-=======
 import frc.robot.Input.OperatorInput;
->>>>>>> Stashed changes
 import frc.robot.commands.LoggingCommand;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.LightsSubsystem;

@@ -11,6 +11,7 @@ import frc.robot.commands.climb.DefaultClimbCommand;
 import frc.robot.commands.drive.DefaultDriveCommand;
 import frc.robot.commands.elevator.DefaultElevatorCommand;
 import frc.robot.commands.vision.DefaultVisionCommand;
+import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -36,12 +37,13 @@ public class RobotContainer {
         private final VisionSubsystem   visionSubsystem   = new VisionSubsystem(lightsSubsystem);
         private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(lightsSubsystem);
         private final CoralSubsystem    coralSubsystem    = new CoralSubsystem();
+        private final ClimbSubsystem    climbSubsystem    = new ClimbSubsystem(lightsSubsystem);
 
         // Driver and operator controllers
         private final OperatorInput     operatorInput     = new OperatorInput();
 
-    /** The container for the robot. Contains subsystems, OI devices, and commands. */
-    public RobotContainer() {
+        /** The container for the robot. Contains subsystems, OI devices, and commands. */
+        public RobotContainer() {
 
 
                 // Initialize all Subsystem default commands.
@@ -54,34 +56,28 @@ public class RobotContainer {
                 elevatorSubsystem.setDefaultCommand(
                         new DefaultElevatorCommand(operatorInput, elevatorSubsystem, lightsSubsystem));
 
-        // coralSubsystem.setDefaultCommand(
-        // new DefaultCoralCommand(operatorInput, coralSubsystem));
+                // coralSubsystem.setDefaultCommand(
+                // new DefaultCoralCommand(operatorInput, coralSubsystem));
+                // Tony is gay
+                // Tony is gay
 
-        elevatorSubsystem.setDefaultCommand(
-            new DefaultElevatorCommand(operatorInput, elevatorSubsystem, lightsSubsystem));
+                elevatorSubsystem.setDefaultCommand(
+                        new DefaultElevatorCommand(operatorInput, elevatorSubsystem, lightsSubsystem));
 
-        visionSubsystem.setDefaultCommand(
-            new DefaultVisionCommand(driveSubsystem, visionSubsystem));
+                visionSubsystem.setDefaultCommand(
+                        new DefaultVisionCommand(driveSubsystem, visionSubsystem));
 
-        // Configure the button bindings - pass in all subsystems
-<<<<<<< Updated upstream
-        operatorInput.configureButtonBindings(driveSubsystem, elevatorSubsystem, coralSubsystem);
-=======
-        operatorInput.configureButtonBindings(driveSubsystem, elevatorSubsystem, coralSubsystem, visionSubsystem);
->>>>>>> Stashed changes
-    }
+                // Configure the button bindings - pass in all subsystems
+                operatorInput.configureButtonBindings(driveSubsystem, elevatorSubsystem, coralSubsystem, visionSubsystem);
+        }
 
-    /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
-     */
-    public Command getAutonomousCommand() {
-<<<<<<< Updated upstream
-        return operatorInput.getAutoCommand();
-=======
-        return new AutoCommand(operatorInput, driveSubsystem, coralSubsystem, elevatorSubsystem, lightsSubsystem,
-            visionSubsystem);
->>>>>>> Stashed changes
-    }
+        /**
+         * Use this to pass the autonomous command to the main {@link Robot} class.
+         *
+         * @return the command to run in autonomous
+         */
+        public Command getAutonomousCommand() {
+                return new AutoCommand(operatorInput, driveSubsystem, coralSubsystem, elevatorSubsystem, lightsSubsystem,
+                        visionSubsystem);
+        }
 }

@@ -11,8 +11,8 @@ public class ForwardToTargetCommand extends LoggingCommand {
     private final double         targetX;
     private final double         targetY;
 
-    private final PIDController  xController = new PIDController(0.1, 0, 0);
-    private final PIDController  yController = new PIDController(0.1, 0, 0);
+    private final PIDController  xController = new PIDController(0.2, 0, 0);
+    private final PIDController  yController = new PIDController(0.2, 0, 0);
 
     private final DriveSubsystem driveSubsystem;
 
@@ -24,8 +24,13 @@ public class ForwardToTargetCommand extends LoggingCommand {
         addRequirements(driveSubsystem);
 
         // set tolerances of x and y
-        xController.setTolerance(1);
-        yController.setTolerance(1);
+        xController.setTolerance(0.2);
+        yController.setTolerance(0.2);
+    }
+
+    @Override
+    public void initialize() {
+        logCommandStart();
     }
 
     @Override
@@ -38,7 +43,8 @@ public class ForwardToTargetCommand extends LoggingCommand {
 
         // calculate the magnitude of velocity
         double speed    = Math.sqrt(xvel * xvel + yvel * yvel);
-        System.out.println(currPose.getX() + " " + currPose.getY());
+        System.out.println(speed);
+        speed = Math.min(Math.max(speed, -0.1), 0.1);
 
         setArcadeDriveMotorSpeeds(speed, 0, DriveConstants.DRIVE_SCALING_NORMAL);
     }
@@ -73,5 +79,11 @@ public class ForwardToTargetCommand extends LoggingCommand {
     public boolean isFinished() {
         // when the robot is close enough to target with tolerance
         return xController.atSetpoint() && yController.atSetpoint();
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+
+        logCommandEnd(interrupted);
     }
 }

@@ -11,7 +11,6 @@ import frc.robot.Input.OperatorInput;
 import frc.robot.commands.coral.CoralCommandOutake;
 import frc.robot.commands.drive.DriveOnHeadingCommand;
 import frc.robot.commands.drive.DriveToTargetCommand;
-import frc.robot.commands.drive.RotateToTargetCommand;
 import frc.robot.commands.elevator.SetElevatorLevelCommand;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -66,11 +65,6 @@ public class AutoCommand extends SequentialCommandGroup {
         switch (autoPattern) {
 
         case DO_NOTHING:
-            System.out.print("DO nothing");
-
-            addCommands(new DriveToTargetCommand(5.57, 3.233, driveSubsystem));
-            addCommands(new DriveToTargetCommand(7.276, 3.614, driveSubsystem));
-            // addCommands(new AlignToReefCommand(driveSubsystem, visionSubsystem, ReefOffsetAngle.LEFT_CORAL));
             return;
 
         case DRIVE_FORWARD:
@@ -84,15 +78,23 @@ public class AutoCommand extends SequentialCommandGroup {
             return;
 
         case PATH_TEST_THING:
-            double[][] targets = { { 6.26, 4.22 } };
+            addCommands(new DriveToTargetCommand(1, 0, driveSubsystem));
+            addCommands(new DriveToTargetCommand(1, 1, driveSubsystem));
 
-            for (int i = 0; i < targets.length; i++) {
-                double targetX = targets[i][0];
-                double targetY = targets[i][1];
+            // addCommands(new DriveToTargetCommand(1.5, 0.4, driveSubsystem));
 
-                addCommands(new RotateToTargetCommand(targetX, targetY, driveSubsystem));
-                // addCommands(new DriveToTargetCommand(targetX, targetY, driveSubsystem));
-            }
+            // addCommands(new DriveToTargetCommand(3, 3, driveSubsystem));
+            // addCommands(new DriveToTargetCommand(1, 1, driveSubsystem));
+
+            // double[][] targets = { { 6.26, 4.22 } };
+
+            // for (int i = 0; i < targets.length; i++) {
+            // double targetX = targets[i][0];
+            // double targetY = targets[i][1];
+
+            // addCommands(new RotateToTargetCommand(targetX, targetY, driveSubsystem));
+            // // addCommands(new DriveToTargetCommand(targetX, targetY, driveSubsystem));
+            // }
             return;
 
         case BOX:

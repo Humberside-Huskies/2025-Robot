@@ -30,11 +30,7 @@ public class CoralCommandOutake extends LoggingCommand {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-<<<<<<< Updated upstream
-        coralSubsystem.setMotorSpeeds(-CoralConstants.INTAKE_SPEED);
-=======
         coralSubsystem.setMotorSpeeds(-CoralConstants.OUTTAKE_SPEED);
->>>>>>> Stashed changes
     }
 
     // Returns true when the command should end.

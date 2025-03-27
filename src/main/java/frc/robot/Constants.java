@@ -107,21 +107,12 @@ public final class Constants {
 
         public static enum ElevatorPosition {
             CORAL_HEIGHT_L1_ENCODER_COUNT(
-<<<<<<< Updated upstream
-                10),
-            CORAL_HEIGHT_L2_ENCODER_COUNT(
-                38.45),
-            CORAL_HEIGHT_L3_ENCODER_COUNT(
-                67.98),
-            CORAL_HEIGHT_L4_ENCODER_COUNT(112.17);
-=======
                 3),
             CORAL_HEIGHT_L2_ENCODER_COUNT(
                 40.00),
             CORAL_HEIGHT_L3_ENCODER_COUNT(
                 66.00),
             CORAL_HEIGHT_L4_ENCODER_COUNT(113.17);
->>>>>>> Stashed changes
 
             private final double counts;
 
@@ -136,26 +127,10 @@ public final class Constants {
             }
         };
 
-        <<<<<<<
-
-        Updated upstream
-    }
-
-    public static final class CoralConstants {
-        public static final int     CORAL_MOTOR_CAN_ID       = 50;
-        public static final boolean MOTOR_INVERTED           = false;
-        public static final double  INTAKE_SPEED             = 0.2;
-        public static final double  OUTTAKE_SPEED            = 0.3;
-
-
-        public static final double  HEIGHT_L1_ENCODER_COUNTS = 10;
-        public static final double  HEIGHT_L2_ENCODER_COUNTS = 38.45;
-        public static final double  HEIGHT_L3_ENCODER_COUNTS = 67.98;
-        public static final double  HEIGHT_L4_ENCODER_COUNTS = 112.17;
     }
 
     public static final class VisionConstants {
-        public static final double AMBIGUITY_THRESHOLD_MEGATAG = 0.3;
+        public static final double AMBIGUITY_THRESHOLD_MEGATAG = 0.05;
         public static final double mountedAngleDegrees         = 18.0;
         public static final double mountedHeightMeters         = 0.160655;
 
@@ -164,8 +139,6 @@ public final class Constants {
         public static final double ReefHeightMeters            = 0.308;
         public static final double ProcessorHeightMeters       = 1.301;
         public static final double BargeHeightMeters           = 1.868;
-=======
->>>>>>> Stashed changes
     }
 
     public static final class CoralConstants {
@@ -173,6 +146,7 @@ public final class Constants {
         public static final boolean MOTOR_INVERTED     = false;
         public static final double  INTAKE_SPEED       = 0.2;
         public static final double  OUTTAKE_SPEED      = 0.3;
+        // Tony is gay
 
         public static enum ReefOffsetAngle {
 
@@ -182,33 +156,6 @@ public final class Constants {
                 -15);
 
             private final double offset;
-
-            private ReefOffsetAngle(double offset) {
-                this.offset = offset;
-            }
-
-            public double getOffset() {
-                return offset;
-            }
-        }
-    }
-
-    public static final class VisionConstants {
-        public static final double AMBIGUITY_THRESHOLD_MEGATAG = 0.3;
-        public static final double mountedAngleDegrees         = 18.0;
-        public static final double mountedHeightMeters         = 0.160655;
-
-        // distance from the target to the floor
-        public static final double StationHeightMeters         = 1.49;
-        public static final double ReefHeightMeters            = 0.308;
-        public static final double ProcessorHeightMeters       = 1.301;
-        public static final double BargeHeightMeters           = 1.868;
-
-        public enum ReefOffsetAngle {
-            Right(15),
-            Left(-15);
-
-            private double offset;
 
             private ReefOffsetAngle(double offset) {
                 this.offset = offset;
