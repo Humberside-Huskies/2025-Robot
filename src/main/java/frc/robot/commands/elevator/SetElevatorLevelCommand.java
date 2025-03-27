@@ -1,6 +1,7 @@
 package frc.robot.commands.elevator;
 
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.commands.LoggingCommand;
 import frc.robot.subsystems.ElevatorSubsystem;
 
@@ -8,7 +9,7 @@ public class SetElevatorLevelCommand extends LoggingCommand {
 
     private ElevatorSubsystem elevatorSubsystem;
 
-    private double            targetEncoderCounts;
+    private ElevatorPosition  targetEncoderCounts;
     private double            error;
 
     /**
@@ -16,7 +17,7 @@ public class SetElevatorLevelCommand extends LoggingCommand {
      *
      * @param climbSubsystem The subsystem used by this command.
      */
-    public SetElevatorLevelCommand(double targetEncoderCounts, ElevatorSubsystem elevatorSubsystem) {
+    public SetElevatorLevelCommand(ElevatorPosition targetEncoderCounts, ElevatorSubsystem elevatorSubsystem) {
         this.targetEncoderCounts = targetEncoderCounts;
         this.elevatorSubsystem   = elevatorSubsystem;
 
@@ -34,7 +35,7 @@ public class SetElevatorLevelCommand extends LoggingCommand {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        error = targetEncoderCounts - elevatorSubsystem.getEncoder();
+        error = targetEncoderCounts.getEncoderCounts() - elevatorSubsystem.getEncoder();
 
         if (Math.abs(error) < ElevatorConstants.SLOW_TOLERANCE) {
             if (error > 0)

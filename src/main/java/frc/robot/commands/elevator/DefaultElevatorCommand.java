@@ -1,7 +1,7 @@
 package frc.robot.commands.elevator;
 
 import frc.robot.Constants.ElevatorConstants;
-import frc.robot.OperatorInput;
+import frc.robot.Input.OperatorInput;
 import frc.robot.commands.LoggingCommand;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.LightsSubsystem;
@@ -37,6 +37,7 @@ public class DefaultElevatorCommand extends LoggingCommand {
     @Override
     public void execute() {
         double elevatorJoystick = operatorInput.ElevatorJoystick();
+
 
         // Climbing
         if (elevatorJoystick > 0) {

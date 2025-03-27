@@ -1,0 +1,77 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ToReef"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+<<<<<<< Updated upstream
+            "waitTime": 2.0
+=======
+            "waitTime": 5.0
+>>>>>>> Stashed changes
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "elevator2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ToStation"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "StationToReef"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "elevator3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

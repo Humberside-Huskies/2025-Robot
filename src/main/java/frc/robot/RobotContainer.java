@@ -4,19 +4,19 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Input.OperatorInput;
 import frc.robot.commands.auto.AutoCommand;
 import frc.robot.commands.climb.DefaultClimbCommand;
 import frc.robot.commands.drive.DefaultDriveCommand;
 import frc.robot.commands.elevator.DefaultElevatorCommand;
+import frc.robot.commands.vision.DefaultVisionCommand;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.LightsSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -34,17 +34,17 @@ public class RobotContainer {
         // constructors so that they can indicate status information on the lights
         private final LightsSubsystem   lightsSubsystem   = new LightsSubsystem();
         private final DriveSubsystem    driveSubsystem    = new DriveSubsystem(lightsSubsystem);
-        // private final VisionSubsystem visionSubsystem = new VisionSubsystem(lightsSubsystem);
+        private final VisionSubsystem   visionSubsystem   = new VisionSubsystem(lightsSubsystem);
         private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(lightsSubsystem);
         private final CoralSubsystem    coralSubsystem    = new CoralSubsystem();
         private final ClimbSubsystem    climbSubsystem    = new ClimbSubsystem(lightsSubsystem);
+
         // Driver and operator controllers
         private final OperatorInput     operatorInput     = new OperatorInput();
 
-        /**
-         * The container for the robot. Contains subsystems, OI devices, and commands.
-         */
+        /** The container for the robot. Contains subsystems, OI devices, and commands. */
         public RobotContainer() {
+
 
                 // Initialize all Subsystem default commands.
                 driveSubsystem.setDefaultCommand(
@@ -58,18 +58,17 @@ public class RobotContainer {
 
                 // coralSubsystem.setDefaultCommand(
                 // new DefaultCoralCommand(operatorInput, coralSubsystem));
+                // Tony is gay
+                // Tony is gay
 
-                // visionSubsystem.setDefaultCommand(
-                // new DefaultVisionCommand(driveSubsystem, visionSubsystem));
+                elevatorSubsystem.setDefaultCommand(
+                        new DefaultElevatorCommand(operatorInput, elevatorSubsystem, lightsSubsystem));
+
+                visionSubsystem.setDefaultCommand(
+                        new DefaultVisionCommand(driveSubsystem, visionSubsystem));
 
                 // Configure the button bindings - pass in all subsystems
-                operatorInput.configureButtonBindings(driveSubsystem, elevatorSubsystem, coralSubsystem);
-
-                // Add a trigger to flash the LEDs in sync with the
-                // RSL light for 5 flashes when the robot is enabled
-                // This can happen also if there is a brown-out of the RoboRIO.
-                new Trigger(() -> RobotState.isEnabled())
-                        .onTrue(new InstantCommand(() -> lightsSubsystem.setRSLFlashCount(5)));
+                operatorInput.configureButtonBindings(driveSubsystem, elevatorSubsystem, coralSubsystem, visionSubsystem);
         }
 
         /**
@@ -78,7 +77,7 @@ public class RobotContainer {
          * @return the command to run in autonomous
          */
         public Command getAutonomousCommand() {
-                return new AutoCommand(operatorInput, driveSubsystem, coralSubsystem, elevatorSubsystem,
-                        lightsSubsystem);
+                return new AutoCommand(operatorInput, driveSubsystem, coralSubsystem, elevatorSubsystem, lightsSubsystem,
+                        visionSubsystem);
         }
 }

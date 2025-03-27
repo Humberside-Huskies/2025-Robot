@@ -2,7 +2,7 @@ package frc.robot.commands.drive;
 
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.DriveConstants.DriveMode;
-import frc.robot.OperatorInput;
+import frc.robot.Input.OperatorInput;
 import frc.robot.commands.LoggingCommand;
 import frc.robot.subsystems.DriveSubsystem;
 

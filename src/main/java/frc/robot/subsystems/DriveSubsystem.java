@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.controllers.PPLTVController;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -13,10 +11,9 @@ import com.studica.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
@@ -26,8 +23,8 @@ import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotWheelSiz
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Robot;
 
 public class DriveSubsystem extends SubsystemBase {
 
@@ -85,9 +82,6 @@ public class DriveSubsystem extends SubsystemBase {
     private final RelativeEncoder           leftEncoder        = leftPrimaryMotor.getEncoder();
     private final RelativeEncoder           rightEncoder       = rightPrimaryMotor.getEncoder();
 
-    private double                          leftEncoderOffset  = 0;
-    private double                          rightEncoderOffset = 0;
-
     /*
      * Gyro
      */
@@ -98,6 +92,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     // odometry
     private final DifferentialDriveOdometry odometry;
+    // kinematics
+    private DifferentialDriveKinematics     kinematics;
 
 
     /*
@@ -108,6 +104,8 @@ public class DriveSubsystem extends SubsystemBase {
     private double                          simAngle           = 0;
     private double                          simLeftEncoder     = 0;
     private double                          simRightEncoder    = 0;
+
+
 
     /** Creates a new DriveSubsystem. */
     public DriveSubsystem(LightsSubsystem lightsSubsystem) {
@@ -138,11 +136,6 @@ public class DriveSubsystem extends SubsystemBase {
         config.follow(rightPrimaryMotor);
         rightFollowerMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        resetEncoders();
-
-        // Reset the Gyro Heading
-        resetGyro();
-
         // Add the field elements for robot simulations
         if (RobotBase.isSimulation()) {
 
@@ -168,75 +161,16 @@ public class DriveSubsystem extends SubsystemBase {
         }
         else {
             navXGyro = new NavXGyro();
-            odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(navXGyro.getAngle()), getLeftEncoder(), 0);
+            odometry = new DifferentialDriveOdometry(new Rotation2d().fromDegrees(0), 0, 0);
         }
+        kinematics = new DifferentialDriveKinematics(DriveConstants.ROBOT_WIDTH);
 
 
-        // setupPathPlanner();
-    }
-
-    public void setupPathPlanner() {
-        // Configure AutoBuilder last
-        AutoBuilder.configure(
-            this::getPose, // Robot pose supplier
-            this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
-            this::getWheelSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-            (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE
-                                                                  // ChassisSpeeds. Also optionally outputs individual module
-                                                                  // feedforwards
-            new PPLTVController(0.02), // PPLTVController is the built in path following controller for differential drive trains
-            AutoConstants.config, // The robot configuration
-            () -> {
-                // Boolean supplier that controls when the path will be mirrored for the red alliance
-                // This will flip the path being followed to the red side of the field.
-                // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-                var alliance = DriverStation.getAlliance();
-                if (alliance.isPresent()) {
-                    return alliance.get() == DriverStation.Alliance.Red;
-                }
-                return false;
-            },
-            this // Reference to this subsystem to set requirements
-        );
-    }
-
-    public void resetOdometry(Pose2d pose) {
         resetEncoders();
-        odometry.resetPosition(navXGyro.getRotation2d(), getLeftEncoder(), getRightEncoder(), pose);
-        resetGyro();
-    }
 
-    public ChassisSpeeds getWheelSpeeds() {
-        // Get the current left and right wheel speeds (in meters per second)
-        double leftSpeed  = getLeftEncoderSpeed();                                // Left wheel speed (m/s)
-        double rightSpeed = getRightEncoderSpeed();                               // Right wheel speed (m/s)
+        if (Robot.isReal())
+            resetGyro();
 
-        // Calculate robot-relative forward velocity (average of left and right speeds)
-        double vx         = (leftSpeed + rightSpeed) / 2;
-
-        // Calculate robot-relative rotational velocity (difference of left and right speeds)
-        double omega      = (rightSpeed - leftSpeed) / DriveConstants.ROBOT_WIDTH;
-
-        // Return the chassis speeds (in meters per second and radians per second)
-        return new ChassisSpeeds(vx, 0, omega); // Assuming no lateral speed (vy = 0)
-    }
-
-    public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
-        // Get the robot-relative velocities from the chassisSpeeds
-        double xSpeed     = chassisSpeeds.vxMetersPerSecond;                   // Forward velocity (m/s)
-        double ySpeed     = chassisSpeeds.vyMetersPerSecond;                   // Sideways velocity (m/s)
-        double rotSpeed   = chassisSpeeds.omegaRadiansPerSecond;               // Rotational velocity (rad/s)
-
-        // Convert the robot-relative velocities into wheel speeds using your drive kinematics
-        // You'll need to write the math for converting these velocities to individual left/right motor speeds.
-        // This could involve simple trigonometry based on the robot's geometry.
-
-        double leftSpeed  = xSpeed - rotSpeed * DriveConstants.ROBOT_WIDTH / 2;
-        double rightSpeed = xSpeed + rotSpeed * DriveConstants.ROBOT_WIDTH / 2;
-
-        // Set the speeds for the motors
-        setMotorSpeeds(leftSpeed, rightSpeed);
     }
 
 
@@ -249,8 +183,10 @@ public class DriveSubsystem extends SubsystemBase {
      */
     public void resetGyro() {
 
+        navXGyro.reset();
         setGyroHeading(0);
         setGyroPitch(0);
+
     }
 
     /**
@@ -389,7 +325,7 @@ public class DriveSubsystem extends SubsystemBase {
      * @return the left drive encoder
      */
     public double getLeftEncoder() {
-        return leftEncoder.getPosition() + simLeftEncoder + leftEncoderOffset;
+        return leftEncoder.getPosition() + simLeftEncoder;
     }
 
     /**
@@ -398,7 +334,7 @@ public class DriveSubsystem extends SubsystemBase {
      * @return the left drive encoder speed
      */
     public double getLeftEncoderSpeed() {
-        return leftEncoder.getVelocity();
+        return leftEncoder.getVelocity() * DriveConstants.CM_PER_ENCODER_COUNT * 60 / 100;
     }
 
     /**
@@ -407,7 +343,7 @@ public class DriveSubsystem extends SubsystemBase {
      * @return the right drive encoder speed
      */
     public double getRightEncoderSpeed() {
-        return rightEncoder.getVelocity();
+        return rightEncoder.getVelocity() * DriveConstants.CM_PER_ENCODER_COUNT * 60 / 100;
     }
 
     /**
@@ -416,7 +352,7 @@ public class DriveSubsystem extends SubsystemBase {
      * @return the right drive encoder
      */
     public double getRightEncoder() {
-        return rightEncoder.getPosition() + simRightEncoder + rightEncoderOffset;
+        return rightEncoder.getPosition() + simRightEncoder;
     }
 
     public Pose2d getPose() {
@@ -428,18 +364,16 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public void updateOdometry() {
-        odometry.update(Rotation2d.fromDegrees(getHeading()), getLeftEncoder(), getRightEncoder());
+        odometry.update(Rotation2d.fromDegrees(getHeading()), getLeftEncoder() * DriveConstants.CM_PER_ENCODER_COUNT
+            / 100.0d,
+            getRightEncoder()
+                * DriveConstants.CM_PER_ENCODER_COUNT / 100.0d);
     }
 
     /** Resets the drive encoders to zero. */
     public void resetEncoders() {
-
-        // Reset the offsets so that the encoders are zeroed.
-        leftEncoderOffset  = 0;
-        leftEncoderOffset  = -getLeftEncoder();
-
-        rightEncoderOffset = 0;
-        rightEncoderOffset = -getRightEncoder();
+        leftEncoder.setPosition(0);
+        rightEncoder.setPosition(0);
     }
 
     /**
@@ -478,7 +412,8 @@ public class DriveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Right Velocity", Math.round(getRightEncoderSpeed() * 100) / 100d);
         SmartDashboard.putNumber("Left Velocity", Math.round(getLeftEncoderSpeed() * 100) / 100d);
         SmartDashboard.putNumber("Left Velocity", Math.round(getLeftEncoderSpeed() * 100) / 100d);
-        SmartDashboard.putString("Odometry (M)", odometry.getPoseMeters().getX() + ", " + odometry.getPoseMeters().getY());
+        SmartDashboard.putNumber("Odometry X", Math.round(odometry.getPoseMeters().getX() * 100) / 100d);
+        SmartDashboard.putNumber("Odometry Y", Math.round(odometry.getPoseMeters().getY() * 100) / 100d);
         SmartDashboard.putNumber("Odometry Angle", odometry.getPoseMeters().getRotation().getDegrees());
 
         if (navXGyro != null) {
@@ -517,14 +452,16 @@ public class DriveSubsystem extends SubsystemBase {
         // Update the gyro simulation offset
         // NOTE: the pose has the opposite rotational direction from the system
         // pose degrees are counter-clockwise positive. weird.
-        simAngle        = -drivetrainSim.getPose().getRotation().getDegrees();
+        simAngle = -drivetrainSim.getPose().getRotation().getDegrees();
+
 
         // Update the encoders with the simulation offsets.
+
         simLeftEncoder  = drivetrainSim.getLeftPositionMeters() * 100 / DriveConstants.CM_PER_ENCODER_COUNT;
         simRightEncoder = drivetrainSim.getRightPositionMeters() * 100 / DriveConstants.CM_PER_ENCODER_COUNT;
 
-        odometry.update(Rotation2d.fromDegrees(simAngle), simLeftEncoder / 100, simRightEncoder / 100);
-        System.out.println(getPose().getX() + " " + getPose().getY());
+        // odometry.update(Rotation2d.fromDegrees(simAngle), simLeftEncoder / 100, simRightEncoder / 100);
+        odometry.resetPose(drivetrainSim.getPose());
     }
 
     @Override

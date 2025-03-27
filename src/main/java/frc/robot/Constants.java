@@ -61,7 +61,7 @@ public final class Constants {
 
         public static final double  ENCODER_COUNTS_PER_REVOLUTION = 8.46;
         public static final double  ROBOT_WHEEL_DIAMETER_CM       = 15.24;
-        public static final double  CM_PER_ENCODER_COUNT          = (ROBOT_WHEEL_DIAMETER_CM * Math.PI) * 2
+        public static final double  CM_PER_ENCODER_COUNT          = (ROBOT_WHEEL_DIAMETER_CM * Math.PI)
             / ENCODER_COUNTS_PER_REVOLUTION;
 
         public static final boolean GYRO_INVERTED                 = false;
@@ -103,23 +103,34 @@ public final class Constants {
         public static final double HOLD_TOLERANCE                = 5;
         public static final double SLOW_TOLERANCE                = 10;
         public static final double FAST_SPEED                    = 0.55;
-    }
-
-    public static final class CoralConstants {
-        public static final int     CORAL_MOTOR_CAN_ID       = 50;
-        public static final boolean MOTOR_INVERTED           = false;
-        public static final double  INTAKE_SPEED             = 0.2;
-        public static final double  OUTTAKE_SPEED            = 0.3;
 
 
-        public static final double  HEIGHT_L1_ENCODER_COUNTS = 3;
-        public static final double  HEIGHT_L2_ENCODER_COUNTS = 40.00;
-        public static final double  HEIGHT_L3_ENCODER_COUNTS = 66.00;
-        public static final double  HEIGHT_L4_ENCODER_COUNTS = 113.17;
+        public static enum ElevatorPosition {
+            CORAL_HEIGHT_L1_ENCODER_COUNT(
+                3),
+            CORAL_HEIGHT_L2_ENCODER_COUNT(
+                40.00),
+            CORAL_HEIGHT_L3_ENCODER_COUNT(
+                66.00),
+            CORAL_HEIGHT_L4_ENCODER_COUNT(113.17);
+
+            private final double counts;
+
+
+            private ElevatorPosition(double counts) {
+                this.counts = counts;
+            }
+
+
+            public double getEncoderCounts() {
+                return counts;
+            }
+        };
+
     }
 
     public static final class VisionConstants {
-        public static final double AMBIGUITY_THRESHOLD_MEGATAG = 0.3;
+        public static final double AMBIGUITY_THRESHOLD_MEGATAG = 0.05;
         public static final double mountedAngleDegrees         = 18.0;
         public static final double mountedHeightMeters         = 0.160655;
 
@@ -128,12 +139,23 @@ public final class Constants {
         public static final double ReefHeightMeters            = 0.308;
         public static final double ProcessorHeightMeters       = 1.301;
         public static final double BargeHeightMeters           = 1.868;
+    }
 
-        public enum ReefOffsetAngle {
-            Right(15),
-            Left(-15);
+    public static final class CoralConstants {
+        public static final int     CORAL_MOTOR_CAN_ID = 50;
+        public static final boolean MOTOR_INVERTED     = false;
+        public static final double  INTAKE_SPEED       = 0.2;
+        public static final double  OUTTAKE_SPEED      = 0.3;
+        // Tony is gay
 
-            private double offset;
+        public static enum ReefOffsetAngle {
+
+            RIGHT_CORAL(
+                15),
+            LEFT_CORAL(
+                -15);
+
+            private final double offset;
 
             private ReefOffsetAngle(double offset) {
                 this.offset = offset;

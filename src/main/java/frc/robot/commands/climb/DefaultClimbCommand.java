@@ -1,7 +1,7 @@
 package frc.robot.commands.climb;
 
 import frc.robot.Constants.ClimbConstants;
-import frc.robot.OperatorInput;
+import frc.robot.Input.OperatorInput;
 import frc.robot.commands.LoggingCommand;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.LightsSubsystem;

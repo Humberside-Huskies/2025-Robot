@@ -59,4 +59,3 @@ public class CoralCommandEject extends LoggingCommand {
         logCommandEnd(interrupted);
     }
 }
-

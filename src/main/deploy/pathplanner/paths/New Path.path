@@ -1,0 +1,110 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+<<<<<<< Updated upstream
+        "x": 3.327020202020202,
+        "y": 5.295517676767677
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.327020202020202,
+        "y": 5.295517676767677
+=======
+        "x": 7.452739726027723,
+        "y": 4.122666952055889
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.2807363013701885,
+        "y": 4.002461472603834
+>>>>>>> Stashed changes
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+<<<<<<< Updated upstream
+        "x": 6.030681818181819,
+        "y": 6.240782828282828
+      },
+      "prevControl": {
+        "x": 5.030681818181819,
+        "y": 6.240782828282828
+=======
+        "x": 5.950171232877037,
+        "y": 4.333026541096985
+      },
+      "prevControl": {
+        "x": 5.912156936813552,
+        "y": 4.08593361668433
+      },
+      "nextControl": {
+        "x": 6.0102739726030645,
+        "y": 4.723694349316163
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.5595034246578585,
+        "y": 5.880672089042191
+      },
+      "prevControl": {
+        "x": 5.63744916523999,
+        "y": 5.604575128425547
+      },
+      "nextControl": {
+        "x": 5.481557684075727,
+        "y": 6.156769049658835
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.67827868852459,
+        "y": 7.027920081967213
+      },
+      "prevControl": {
+        "x": 0.8819173871547266,
+        "y": 7.71910158881653
+>>>>>>> Stashed changes
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+<<<<<<< Updated upstream
+    "maxVelocity": 1.0,
+    "maxAcceleration": 0.5,
+=======
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+>>>>>>> Stashed changes
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": true
+}

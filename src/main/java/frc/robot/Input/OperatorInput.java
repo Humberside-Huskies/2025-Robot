@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.Input;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -8,16 +8,18 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants.AutoPattern;
 import frc.robot.Constants.CoralConstants;
 import frc.robot.Constants.DriveConstants.DriveMode;
+import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.Constants.OperatorInputConstants;
 import frc.robot.commands.CancelCommand;
-import frc.robot.commands.GameController;
 import frc.robot.commands.coral.CoralCommandEject;
 import frc.robot.commands.coral.CoralCommandIntake;
 import frc.robot.commands.coral.CoralCommandOutake;
 import frc.robot.commands.elevator.SetElevatorLevelCommand;
+import frc.robot.commands.vision.AlignToReefCommand;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 /**
  * The DriverController exposes all driver functions
@@ -30,28 +32,27 @@ public class OperatorInput extends SubsystemBase {
     private final GameController operatorController;
 
     // Auto Setup Choosers
-    SendableChooser<AutoPattern> autoPatternChooser = new SendableChooser<>();
-    SendableChooser<Integer>     waitTimeChooser    = new SendableChooser<>();
-    SendableChooser<DriveMode>   driveModeChooser   = new SendableChooser<>();
+    SendableChooser<DriveMode>   driveModeChooser = new SendableChooser<>();
+    SendableChooser<Integer>     waitTimeChooser  = new SendableChooser<>();
+    SendableChooser<AutoPattern> autoChooser      = new SendableChooser<>();
 
     /**
      * Construct an OperatorInput class that is fed by a DriverController and optionally an
      * OperatorController.
      */
     public OperatorInput() {
-
         driverController   = new GameController(OperatorInputConstants.DRIVER_CONTROLLER_PORT,
             OperatorInputConstants.DRIVER_CONTROLLER_DEADBAND);
         operatorController = new GameController(OperatorInputConstants.OPERATOR_CONTROLLER_PORT,
             OperatorInputConstants.OPERATOR_CONTROLLER_DEADBAND);
 
         // Initialize the dashboard selectors
-        autoPatternChooser.setDefaultOption("Do Nothing", AutoPattern.DO_NOTHING);
-        SmartDashboard.putData("Auto Pattern", autoPatternChooser);
-        autoPatternChooser.addOption("Drive Forward", AutoPattern.DRIVE_FORWARD);
-        autoPatternChooser.addOption("Box", AutoPattern.BOX);
-        autoPatternChooser.addOption("Path Test", AutoPattern.PATH_TEST_THING);
-        autoPatternChooser.addOption("Actual Auto", AutoPattern.DRIVE_FORWARD_AND_OUTAKE_L1);
+        autoChooser.setDefaultOption("Do Nothing", AutoPattern.DO_NOTHING);
+        SmartDashboard.putData("Auto Pattern", autoChooser);
+        autoChooser.addOption("Drive Forward", AutoPattern.DRIVE_FORWARD);
+        autoChooser.addOption("Box", AutoPattern.BOX);
+        autoChooser.addOption("Path Test", AutoPattern.PATH_TEST_THING);
+        autoChooser.addOption("Actual Auto", AutoPattern.DRIVE_FORWARD_AND_OUTAKE_L1);
 
         waitTimeChooser.setDefaultOption("No wait", 0);
         SmartDashboard.putData("Auto Wait Time", waitTimeChooser);
@@ -76,7 +77,7 @@ public class OperatorInput extends SubsystemBase {
      * @param driveSubsystem
      */
     public void configureButtonBindings(DriveSubsystem driveSubsystem,
-        ElevatorSubsystem elevatorSubsystem, CoralSubsystem coralSubsystem) {
+        ElevatorSubsystem elevatorSubsystem, CoralSubsystem coralSubsystem, VisionSubsystem visionSubsystem) {
 
         // Cancel Command - cancels all running commands on all subsystems
         new Trigger(() -> isCancel())
@@ -85,17 +86,6 @@ public class OperatorInput extends SubsystemBase {
         new Trigger(() -> operatorController.getStartButton())
             .onTrue(new CancelCommand(this, driveSubsystem, elevatorSubsystem));
 
-        // new Trigger(() -> driveToAprilTag())
-        // .onTrue(new AlignToAprilTagCommand(driveSubsystem, visionSubsystem));
-
-        // new Trigger(() -> driverController.getPOV() == 90)
-        // .onTrue(new AlignToReefCommand(driveSubsystem, visionSubsystem, ReefOffsetAngle.Right));
-
-        // new Trigger(() -> driverController.getPOV() == 270)
-        // .onTrue(new AlignToReefCommand(driveSubsystem, visionSubsystem, ReefOffsetAngle.Left));
-
-
-
         // Coral Shooter
         new Trigger(() -> isIntake())
             .onTrue(new CoralCommandIntake(coralSubsystem));
@@ -103,30 +93,39 @@ public class OperatorInput extends SubsystemBase {
         new Trigger(() -> isOutTake())
             .onTrue(new CoralCommandOutake(coralSubsystem));
 
-        new Trigger(() -> operatorController.getXButton())
+        new Trigger(() -> isEject())
             .onTrue(new CoralCommandEject(coralSubsystem));
 
         // Elevator Level setter
         // Configure the DPAD to drive one meter on a heading
-        new Trigger(() -> operatorController.getPOV() == 0)
-            .onTrue(new SetElevatorLevelCommand(CoralConstants.HEIGHT_L1_ENCODER_COUNTS, elevatorSubsystem));
+        new Trigger(() -> operatorController.getYButton())
+            .onTrue(new SetElevatorLevelCommand(ElevatorPosition.CORAL_HEIGHT_L1_ENCODER_COUNT, elevatorSubsystem));
 
-        new Trigger(() -> operatorController.getPOV() == 90)
-            .onTrue(new SetElevatorLevelCommand(CoralConstants.HEIGHT_L2_ENCODER_COUNTS, elevatorSubsystem));
+        new Trigger(() -> operatorController.getBButton())
+            .onTrue(new SetElevatorLevelCommand(ElevatorPosition.CORAL_HEIGHT_L2_ENCODER_COUNT, elevatorSubsystem));
 
-        new Trigger(() -> operatorController.getPOV() == 180)
-            .onTrue(new SetElevatorLevelCommand(CoralConstants.HEIGHT_L3_ENCODER_COUNTS, elevatorSubsystem));
+        new Trigger(() -> operatorController.getAButton())
+            .onTrue(new SetElevatorLevelCommand(ElevatorPosition.CORAL_HEIGHT_L3_ENCODER_COUNT, elevatorSubsystem));
 
-        new Trigger(() -> operatorController.getPOV() == 270)
-            .onTrue(new SetElevatorLevelCommand(CoralConstants.HEIGHT_L4_ENCODER_COUNTS, elevatorSubsystem));
+        new Trigger(() -> operatorController.getXButton())
+            .onTrue(new SetElevatorLevelCommand(ElevatorPosition.CORAL_HEIGHT_L4_ENCODER_COUNT, elevatorSubsystem));
+
+
+        new Trigger(() -> driverController.getPOV() == 0)
+            .onTrue(new AlignToReefCommand(driveSubsystem, visionSubsystem, CoralConstants.ReefOffsetAngle.LEFT_CORAL));
+
+        new Trigger(() -> driverController.getPOV() == 90)
+            .onTrue(new AlignToReefCommand(driveSubsystem, visionSubsystem, CoralConstants.ReefOffsetAngle.RIGHT_CORAL));
+
+        // new Trigger(() -> driverController.getPOV() == 0).onTrue(new DriveToAprilTag(driveSubsystem, visionSubsystem));
+        // new Trigger(() -> driverController.getPOV() == 180).onTrue(new DriveToAprilTag(driveSubsystem, visionSubsystem));
     }
 
-    /*
-     * Auto Pattern Selectors
-     */
+
     public AutoPattern getAutoPattern() {
-        return autoPatternChooser.getSelected();
+        return autoChooser.getSelected();
     }
+
 
     public Integer getAutoDelay() {
         return waitTimeChooser.getSelected();
@@ -190,11 +189,15 @@ public class OperatorInput extends SubsystemBase {
     }
 
     public boolean isIntake() {
-        return operatorController.getAButton();
+        return operatorController.getLeftTriggerAxis() > 0;
     }
 
     public boolean isOutTake() {
-        return operatorController.getBButton();
+        return operatorController.getRightTriggerAxis() > 0;
+    }
+
+    public boolean isEject() {
+        return operatorController.getLeftBumperButton();
     }
 
     /*
@@ -234,14 +237,6 @@ public class OperatorInput extends SubsystemBase {
         return value;
     }
 
-    // public double isElevatorRetract() {
-    // double value = operatorController.getRightTriggerAxis();
-
-    // if (value < 0.1)
-    // return 0;
-    // return value;
-    // }
-
     public boolean isResetEncoders() {
         return driverController.getBackButton();
     }
@@ -257,8 +252,6 @@ public class OperatorInput extends SubsystemBase {
     public double isRetract() {
         return driverController.getRightTriggerAxis();
     }
-
-
 
     // public boolean
 

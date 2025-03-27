@@ -1,7 +1,7 @@
 package frc.robot.commands.coral;
 
 import frc.robot.Constants.CoralConstants;
-import frc.robot.OperatorInput;
+import frc.robot.Input.OperatorInput;
 import frc.robot.commands.LoggingCommand;
 import frc.robot.subsystems.CoralSubsystem;
 
