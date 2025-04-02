@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.AlgaeConstants;
 import frc.robot.Constants.AutoConstants.AutoPattern;
 import frc.robot.Constants.CoralConstants;
 import frc.robot.Constants.DriveConstants.DriveMode;
@@ -15,6 +16,7 @@ import frc.robot.commands.coral.CoralCommandEject;
 import frc.robot.commands.coral.CoralCommandIntake;
 import frc.robot.commands.coral.CoralCommandOutake;
 import frc.robot.commands.elevator.SetElevatorLevelCommand;
+import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -76,7 +78,8 @@ public class OperatorInput extends SubsystemBase {
      * @param driveSubsystem
      */
     public void configureButtonBindings(DriveSubsystem driveSubsystem,
-        ElevatorSubsystem elevatorSubsystem, CoralSubsystem coralSubsystem) {
+        ElevatorSubsystem elevatorSubsystem, CoralSubsystem coralSubsystem,
+        AlgaeSubsystem algaeSubsystem) {
 
         // Cancel Command - cancels all running commands on all subsystems
         new Trigger(() -> isCancel())
@@ -221,16 +224,18 @@ public class OperatorInput extends SubsystemBase {
     public double CoralJoystick() {
         double value = operatorController.getRightY();
 
-        if (Math.abs(value) < 0.1)
+        if (Math.abs(value) < 0.1) {
             return 0;
+        }
         return value;
     }
 
     public double ElevatorJoystick() {
         double value = operatorController.getLeftY();
 
-        if (Math.abs(value) < 0.1)
+        if (Math.abs(value) < 0.1) {
             return 0;
+        }
         return value;
     }
 
@@ -256,6 +261,30 @@ public class OperatorInput extends SubsystemBase {
     // cool function buddy climbing things
     public double isRetract() {
         return driverController.getRightTriggerAxis();
+    }
+
+    public double getAlgaeArmSpeed() {
+
+        if (driverController.getYButton()) {
+            return AlgaeConstants.ARM_SPEED_SLOW;
+        }
+
+        if (driverController.getAButton()) {
+            return -AlgaeConstants.ARM_SPEED_SLOW;
+        }
+
+        return 0;
+    }
+
+    public double getAlgaeIntakeSpeed() {
+
+        if (driverController.getXButton()) {
+            return -AlgaeConstants.INTAKE_SPEED;
+        }
+        if (driverController.getBButton()) {
+            return -AlgaeConstants.INTAKE_SPEED;
+        }
+        return 0;
     }
 
 

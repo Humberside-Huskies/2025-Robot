@@ -8,10 +8,12 @@ import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.algae.DefaultAlgaeCommand;
 import frc.robot.commands.auto.AutoCommand;
 import frc.robot.commands.climb.DefaultClimbCommand;
 import frc.robot.commands.drive.DefaultDriveCommand;
 import frc.robot.commands.elevator.DefaultElevatorCommand;
+import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -29,56 +31,60 @@ import frc.robot.subsystems.LightsSubsystem;
  */
 public class RobotContainer {
 
-        // Subsystems
-        // Declarre the lighting subsystem first and pass it into the other subsystem
-        // constructors so that they can indicate status information on the lights
-        private final LightsSubsystem   lightsSubsystem   = new LightsSubsystem();
-        private final DriveSubsystem    driveSubsystem    = new DriveSubsystem(lightsSubsystem);
-        // private final VisionSubsystem visionSubsystem = new VisionSubsystem(lightsSubsystem);
-        private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(lightsSubsystem);
-        private final CoralSubsystem    coralSubsystem    = new CoralSubsystem();
-        private final ClimbSubsystem    climbSubsystem    = new ClimbSubsystem(lightsSubsystem);
-        // Driver and operator controllers
-        private final OperatorInput     operatorInput     = new OperatorInput();
+    // Subsystems
+    // Declarre the lighting subsystem first and pass it into the other subsystem
+    // constructors so that they can indicate status information on the lights
+    private final LightsSubsystem   lightsSubsystem   = new LightsSubsystem();
+    private final DriveSubsystem    driveSubsystem    = new DriveSubsystem(lightsSubsystem);
+    // private final VisionSubsystem visionSubsystem = new VisionSubsystem(lightsSubsystem);
+    private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(lightsSubsystem);
+    private final CoralSubsystem    coralSubsystem    = new CoralSubsystem();
+    private final ClimbSubsystem    climbSubsystem    = new ClimbSubsystem(lightsSubsystem);
+    private final AlgaeSubsystem    algaeSubsystem    = new AlgaeSubsystem();
+    // Driver and operator controllers
+    private final OperatorInput     operatorInput     = new OperatorInput();
 
-        /**
-         * The container for the robot. Contains subsystems, OI devices, and commands.
-         */
-        public RobotContainer() {
+    /**
+     * The container for the robot. Contains subsystems, OI devices, and commands.
+     */
+    public RobotContainer() {
 
-                // Initialize all Subsystem default commands.
-                driveSubsystem.setDefaultCommand(
-                        new DefaultDriveCommand(operatorInput, driveSubsystem));
+        // Initialize all Subsystem default commands.
+        driveSubsystem.setDefaultCommand(
+            new DefaultDriveCommand(operatorInput, driveSubsystem));
 
-                climbSubsystem.setDefaultCommand(
-                        new DefaultClimbCommand(climbSubsystem, operatorInput, lightsSubsystem));
+        climbSubsystem.setDefaultCommand(
+            new DefaultClimbCommand(climbSubsystem, operatorInput, lightsSubsystem));
 
-                elevatorSubsystem.setDefaultCommand(
-                        new DefaultElevatorCommand(operatorInput, elevatorSubsystem, lightsSubsystem));
+        elevatorSubsystem.setDefaultCommand(
+            new DefaultElevatorCommand(operatorInput, elevatorSubsystem, lightsSubsystem));
 
-                // coralSubsystem.setDefaultCommand(
-                // new DefaultCoralCommand(operatorInput, coralSubsystem));
+        algaeSubsystem.setDefaultCommand(
+            new DefaultAlgaeCommand(operatorInput, algaeSubsystem));
 
-                // visionSubsystem.setDefaultCommand(
-                // new DefaultVisionCommand(driveSubsystem, visionSubsystem));
+        // coralSubsystem.setDefaultCommand(
+        // new DefaultCoralCommand(operatorInput, coralSubsystem));
 
-                // Configure the button bindings - pass in all subsystems
-                operatorInput.configureButtonBindings(driveSubsystem, elevatorSubsystem, coralSubsystem);
+        // visionSubsystem.setDefaultCommand(
+        // new DefaultVisionCommand(driveSubsystem, visionSubsystem));
 
-                // Add a trigger to flash the LEDs in sync with the
-                // RSL light for 5 flashes when the robot is enabled
-                // This can happen also if there is a brown-out of the RoboRIO.
-                new Trigger(() -> RobotState.isEnabled())
-                        .onTrue(new InstantCommand(() -> lightsSubsystem.setRSLFlashCount(5)));
-        }
+        // Configure the button bindings - pass in all subsystems
+        operatorInput.configureButtonBindings(driveSubsystem, elevatorSubsystem, coralSubsystem, algaeSubsystem);
 
-        /**
-         * Use this to pass the autonomous command to the main {@link Robot} class.
-         *
-         * @return the command to run in autonomous
-         */
-        public Command getAutonomousCommand() {
-                return new AutoCommand(operatorInput, driveSubsystem, coralSubsystem, elevatorSubsystem,
-                        lightsSubsystem);
-        }
+        // Add a trigger to flash the LEDs in sync with the
+        // RSL light for 5 flashes when the robot is enabled
+        // This can happen also if there is a brown-out of the RoboRIO.
+        new Trigger(() -> RobotState.isEnabled())
+            .onTrue(new InstantCommand(() -> lightsSubsystem.setRSLFlashCount(5)));
+    }
+
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     */
+    public Command getAutonomousCommand() {
+        return new AutoCommand(operatorInput, driveSubsystem, coralSubsystem, elevatorSubsystem,
+            lightsSubsystem);
+    }
 }
