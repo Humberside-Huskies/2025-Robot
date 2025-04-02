@@ -69,6 +69,7 @@ public class RobotContainer {
 
                 // Configure the button bindings - pass in all subsystems
                 operatorInput.configureButtonBindings(driveSubsystem, elevatorSubsystem, coralSubsystem, visionSubsystem);
+
         }
 
         /**

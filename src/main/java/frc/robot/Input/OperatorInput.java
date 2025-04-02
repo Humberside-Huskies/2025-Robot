@@ -221,7 +221,7 @@ public class OperatorInput extends SubsystemBase {
         SmartDashboard.putString("Driver Controller", driverController.toString());
     }
 
-    public double CoralJoystick() {
+    public double AlgaeJoystick() {
         double value = operatorController.getRightY();
 
         if (Math.abs(value) < 0.1)

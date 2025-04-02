@@ -1,6 +1,5 @@
 package frc.robot.commands.coral;
 
-import frc.robot.Constants.CoralConstants;
 import frc.robot.Input.OperatorInput;
 import frc.robot.commands.LoggingCommand;
 import frc.robot.subsystems.CoralSubsystem;
@@ -33,19 +32,19 @@ public class DefaultCoralCommand extends LoggingCommand {
     }
 
     // Called every time the scheduler runs while the command is scheduled.
-    @Override
-    public void execute() {
-        double coralJoystick = operatorInput.CoralJoystick();
+    // @Override
+    // public void execute() {
+    // double coralJoystick = operatorInput.CoralJoystick();
 
-        // Pushing
-        if (coralJoystick > 0) {
-            coralSubsystem.setMotorSpeeds(-CoralConstants.INTAKE_SPEED * Math.abs(coralJoystick));
-        }
-        // Pulling
-        else if (coralJoystick < 0) {
-            coralSubsystem.setMotorSpeeds(CoralConstants.INTAKE_SPEED * Math.abs(coralJoystick));
-        }
-    }
+    // Pushing
+    // if (coralJoystick > 0) {
+    // coralSubsystem.setMotorSpeeds(-CoralConstants.INTAKE_SPEED * Math.abs(coralJoystick));
+    // }
+    // Pulling
+    // else if (coralJoystick < 0) {
+    // coralSubsystem.setMotorSpeeds(CoralConstants.INTAKE_SPEED * Math.abs(coralJoystick));
+    // }
+    // }
 
     // Returns true when the command should end.
     @Override

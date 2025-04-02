@@ -163,7 +163,54 @@ public final class Constants {
 
             public double getOffset() {
                 return offset;
+
             }
         }
+    }
+
+    public static final class AlgaeConstants {
+        public static final int     ARM_MOTOR_CAN_ID    = 60;
+        public static final int     INTAKE_MOTOR_CAN_ID = 61;
+
+        public static final boolean MOTOR_INVERTED      = false;
+
+        // Algae arm rotation speed
+        public static final double  ARM_SPEED_SLOW      = .04;
+        public static final double  ARM_SPEED_FAST      = .1;
+
+        // Algae Intake Motor speed
+        public static final double  INTAKE_SPEED        = 0.1;
+        public static final double  OUTTAKE_SPEED       = -0.1;
+
+        // Algae arm's speed tolerance
+        public static final double  ARM_SLOW_TOLERANCE  = 5;
+
+        public static final double  HOLD_TOLERANCE      = 3;
+
+        public static final double  gearRatio           = 72 / 360;
+
+
+        public static enum AlgaeArmRotation {
+            ALGAE_INTAKE_Angle(
+                90),
+            ALGAE_OUTTAKE_Angle(
+                45),
+            ALGAE_REMOVE_Angle(
+                30),
+            ALGAE_RESET_Angle(
+                10);
+
+            private final double counts;
+
+
+            private AlgaeArmRotation(double counts) {
+                this.counts = counts;
+            }
+
+
+            public double getDegrees() {
+                return counts;
+            }
+        };
     }
 }
