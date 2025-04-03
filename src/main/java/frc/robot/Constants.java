@@ -103,19 +103,55 @@ public final class Constants {
         public static final double HOLD_TOLERANCE                = 5;
         public static final double SLOW_TOLERANCE                = 10;
         public static final double FAST_SPEED                    = 0.55;
+
+        public static enum ElevatorPosition {
+            CORAL_HEIGHT_L1_ENCODER_COUNT(
+                3),
+            CORAL_HEIGHT_L2_ENCODER_COUNT(
+                40.00),
+            CORAL_HEIGHT_L3_ENCODER_COUNT(
+                66.00),
+            CORAL_HEIGHT_L4_ENCODER_COUNT(113.17);
+
+            private final double counts;
+
+
+            private ElevatorPosition(double counts) {
+                this.counts = counts;
+            }
+
+
+            public double getEncoderCounts() {
+                return counts;
+            }
+        };
+
     }
 
     public static final class CoralConstants {
-        public static final int     CORAL_MOTOR_CAN_ID       = 50;
-        public static final boolean MOTOR_INVERTED           = false;
-        public static final double  INTAKE_SPEED             = 0.2;
-        public static final double  OUTTAKE_SPEED            = 0.3;
+        public static final int     CORAL_MOTOR_CAN_ID = 50;
+        public static final boolean MOTOR_INVERTED     = false;
+        public static final double  INTAKE_SPEED       = 0.2;
+        public static final double  OUTTAKE_SPEED      = 0.3;
 
+        public static enum ReefOffsetAngle {
 
-        public static final double  HEIGHT_L1_ENCODER_COUNTS = 3;
-        public static final double  HEIGHT_L2_ENCODER_COUNTS = 40.00;
-        public static final double  HEIGHT_L3_ENCODER_COUNTS = 66.00;
-        public static final double  HEIGHT_L4_ENCODER_COUNTS = 113.17;
+            RIGHT_CORAL(
+                15),
+            LEFT_CORAL(
+                -15);
+
+            private final double offset;
+
+            private ReefOffsetAngle(double offset) {
+                this.offset = offset;
+            }
+
+            public double getOffset() {
+                return offset;
+
+            }
+        }
     }
 
     public static final class VisionConstants {
@@ -129,53 +165,41 @@ public final class Constants {
         public static final double ProcessorHeightMeters       = 1.301;
         public static final double BargeHeightMeters           = 1.868;
 
-        public enum ReefOffsetAngle {
-            Right(15),
-            Left(-15);
-
-            private double offset;
-
-            private ReefOffsetAngle(double offset) {
-                this.offset = offset;
-            }
-
-            public double getOffset() {
-                return offset;
-            }
-        }
     }
 
     public static final class AlgaeConstants {
 
-        public static final int     ARM_MOTOR_CAN_ID      = 60;
-        public static final int     INTAKE_MOTOR_CAN_ID   = 61;
+        public static final int     ARM_MOTOR_CAN_ID                    = 60;
+        public static final int     INTAKE_MOTOR_CAN_ID                 = 61;
 
-        public static final boolean ARM_MOTOR_INVERTED    = false;
-        public static final boolean INTAKE_MOTOR_INVERTED = false;
+        public static final boolean ARM_MOTOR_INVERTED                  = true;
+        public static final boolean INTAKE_MOTOR_INVERTED               = false;
 
         // Algae arm rotation speed
-        public static final double  ARM_SPEED_SLOW        = .04;
-        public static final double  ARM_SPEED_FAST        = .3;
+        public static final double  ARM_SPEED_SLOW                      = .2;
+        public static final double  ARM_SPEED_FAST                      = .3;
+        public static final double  ARM_HOLD_SPEED                      = -.02;
+        public static final double  ARM_HOLD_ALGAE_SPEED_GAIN           = -.01;
 
         // Algae Intake Motor speed
-        public static final double  INTAKE_SPEED          = 0.2;
-        public static final double  OUTTAKE_SPEED         = -0.2;
+        public static final double  INTAKE_SPEED                        = 0.3;
+        public static final double  OUTTAKE_SPEED                       = -0.3;
 
         // Algae arm's speed tolerance
-        public static final double  ARM_SLOW_TOLERANCE    = 5;
+        public static final double  ARM_SLOW_TOLERANCE                  = 5;
 
-        public static final double  HOLD_TOLERANCE        = 3;
+        public static final double  HOLD_TOLERANCE                      = 3;
 
-        public static final double  gearRatio             = 72 / 360;
+        public static final double  GEAR_RATIO_DEGREE_PER_ENCODER_COUNT = 360 / 72;
 
 
         public static enum AlgaeArmRotation {
             ALGAE_INTAKE_Angle(
-                90),
+                95),
             ALGAE_OUTTAKE_Angle(
-                45),
+                35),
             ALGAE_REMOVE_Angle(
-                30),
+                29),
             ALGAE_RESET_Angle(
                 10);
 

@@ -4,10 +4,7 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.algae.DefaultAlgaeCommand;
 import frc.robot.commands.auto.AutoCommand;
 import frc.robot.commands.climb.DefaultClimbCommand;
@@ -19,6 +16,7 @@ import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.LightsSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -36,7 +34,7 @@ public class RobotContainer {
     // constructors so that they can indicate status information on the lights
     private final LightsSubsystem   lightsSubsystem   = new LightsSubsystem();
     private final DriveSubsystem    driveSubsystem    = new DriveSubsystem(lightsSubsystem);
-    // private final VisionSubsystem visionSubsystem = new VisionSubsystem(lightsSubsystem);
+    private final VisionSubsystem   visionSubsystem   = new VisionSubsystem(lightsSubsystem);
     private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(lightsSubsystem);
     private final CoralSubsystem    coralSubsystem    = new CoralSubsystem();
     private final ClimbSubsystem    climbSubsystem    = new ClimbSubsystem(lightsSubsystem);
@@ -59,11 +57,9 @@ public class RobotContainer {
         elevatorSubsystem.setDefaultCommand(
             new DefaultElevatorCommand(operatorInput, elevatorSubsystem, lightsSubsystem));
 
+
         algaeSubsystem.setDefaultCommand(
             new DefaultAlgaeCommand(operatorInput, algaeSubsystem));
-
-        // coralSubsystem.setDefaultCommand(
-        // new DefaultCoralCommand(operatorInput, coralSubsystem));
 
         // visionSubsystem.setDefaultCommand(
         // new DefaultVisionCommand(driveSubsystem, visionSubsystem));
@@ -74,8 +70,8 @@ public class RobotContainer {
         // Add a trigger to flash the LEDs in sync with the
         // RSL light for 5 flashes when the robot is enabled
         // This can happen also if there is a brown-out of the RoboRIO.
-        new Trigger(() -> RobotState.isEnabled())
-            .onTrue(new InstantCommand(() -> lightsSubsystem.setRSLFlashCount(5)));
+        // new Trigger(() -> RobotState.isEnabled())
+        // .onTrue(new InstantCommand(() -> lightsSubsystem.setRSLFlashCount(5)));
     }
 
     /**
@@ -85,6 +81,6 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         return new AutoCommand(operatorInput, driveSubsystem, coralSubsystem, elevatorSubsystem,
-            lightsSubsystem);
+            lightsSubsystem, visionSubsystem);
     }
 }

@@ -22,7 +22,6 @@ public class CoralSubsystem extends SubsystemBase {
 
     private double           primaryMotorSpeed = 0;
 
-
     /** Creates a new ElevatorSubsystem. */
     public CoralSubsystem() {
 
@@ -35,7 +34,6 @@ public class CoralSubsystem extends SubsystemBase {
         primaryMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         primaryLimitSwitch = primaryMotor.getForwardLimitSwitch();
-
     }
 
     public void setMotorSpeeds(double primaryMotorSpeed) {
@@ -49,6 +47,7 @@ public class CoralSubsystem extends SubsystemBase {
     public boolean getForwardLimitSwitch() {
         return primaryLimitSwitch.isPressed();
     }
+
 
     /** Safely stop the subsystem from moving */
     public void stop() {

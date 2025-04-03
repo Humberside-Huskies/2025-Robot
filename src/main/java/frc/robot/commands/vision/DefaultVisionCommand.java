@@ -1,6 +1,5 @@
 package frc.robot.commands.vision;
 
-import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.LoggingCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
@@ -25,8 +24,8 @@ public class DefaultVisionCommand extends LoggingCommand {
         this.visionSubsystem = visionSubsystem;
         this.driveSubsystem  = driveSubsystem;
 
-        // Add required subsystems
         addRequirements(visionSubsystem);
+
     }
 
     // Called when the command is initially scheduled.
@@ -40,13 +39,14 @@ public class DefaultVisionCommand extends LoggingCommand {
     @Override
     public void execute() {
 
-        if (visionSubsystem.getAmbiguity() > VisionConstants.AMBIGUITY_THRESHOLD_MEGATAG) {
-            System.out.println("Using Limelight");
-            driveSubsystem.setPose(visionSubsystem.getBotPose());
-            return;
-        }
+        // The lesser the ambiguity the better acuracy
+        // if (visionSubsystem.getAmbiguity() > VisionConstants.AMBIGUITY_THRESHOLD_MEGATAG) {
+        // System.out.println("Using Limelight: " + visionSubsystem.getAmbiguity());
+        // driveSubsystem.setPose(visionSubsystem.getBotPose());
+        // return;
+        // }
 
-        System.out.println("Using Encoders");
+        // System.out.println("Using Encoders");
         driveSubsystem.updateOdometry();
     }
 

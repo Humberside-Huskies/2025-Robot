@@ -6,12 +6,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AlgaeConstants;
+import frc.robot.Constants.AlgaeConstants.AlgaeArmRotation;
 import frc.robot.Constants.AutoConstants.AutoPattern;
-import frc.robot.Constants.CoralConstants;
 import frc.robot.Constants.DriveConstants.DriveMode;
+import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.Constants.OperatorInputConstants;
 import frc.robot.commands.CancelCommand;
 import frc.robot.commands.GameController;
+import frc.robot.commands.algae.AlgaeIntakeCommand;
+import frc.robot.commands.algae.SetAlgaeCommand;
 import frc.robot.commands.coral.CoralCommandEject;
 import frc.robot.commands.coral.CoralCommandIntake;
 import frc.robot.commands.coral.CoralCommandOutake;
@@ -97,7 +100,18 @@ public class OperatorInput extends SubsystemBase {
         // new Trigger(() -> driverController.getPOV() == 270)
         // .onTrue(new AlignToReefCommand(driveSubsystem, visionSubsystem, ReefOffsetAngle.Left));
 
+        // Operator Control
+        new Trigger(() -> operatorController.getYButton())
+            .onTrue(new SetElevatorLevelCommand(ElevatorPosition.CORAL_HEIGHT_L1_ENCODER_COUNT, elevatorSubsystem));
 
+        new Trigger(() -> operatorController.getBButton())
+            .onTrue(new SetElevatorLevelCommand(ElevatorPosition.CORAL_HEIGHT_L2_ENCODER_COUNT, elevatorSubsystem));
+
+        new Trigger(() -> operatorController.getAButton())
+            .onTrue(new SetElevatorLevelCommand(ElevatorPosition.CORAL_HEIGHT_L3_ENCODER_COUNT, elevatorSubsystem));
+
+        new Trigger(() -> operatorController.getXButton())
+            .onTrue(new SetElevatorLevelCommand(ElevatorPosition.CORAL_HEIGHT_L4_ENCODER_COUNT, elevatorSubsystem));
 
         // Coral Shooter
         new Trigger(() -> isIntake())
@@ -106,22 +120,42 @@ public class OperatorInput extends SubsystemBase {
         new Trigger(() -> isOutTake())
             .onTrue(new CoralCommandOutake(coralSubsystem));
 
-        new Trigger(() -> operatorController.getXButton())
+        new Trigger(() -> isEject())
             .onTrue(new CoralCommandEject(coralSubsystem));
 
-        // Elevator Level setter
-        // Configure the DPAD to drive one meter on a heading
-        new Trigger(() -> operatorController.getPOV() == 0)
-            .onTrue(new SetElevatorLevelCommand(CoralConstants.HEIGHT_L1_ENCODER_COUNTS, elevatorSubsystem));
+        // Algae
+        new Trigger(() -> driverController.getXButton())
+            .onTrue(new SetAlgaeCommand(AlgaeArmRotation.ALGAE_RESET_Angle, algaeSubsystem));
 
-        new Trigger(() -> operatorController.getPOV() == 90)
-            .onTrue(new SetElevatorLevelCommand(CoralConstants.HEIGHT_L2_ENCODER_COUNTS, elevatorSubsystem));
+        new Trigger(() -> driverController.getBButton())
+            .onTrue(new SetAlgaeCommand(AlgaeArmRotation.ALGAE_OUTTAKE_Angle, algaeSubsystem));
 
-        new Trigger(() -> operatorController.getPOV() == 180)
-            .onTrue(new SetElevatorLevelCommand(CoralConstants.HEIGHT_L3_ENCODER_COUNTS, elevatorSubsystem));
+        new Trigger(() -> driverController.getYButton())
+            .onTrue(new SetAlgaeCommand(AlgaeArmRotation.ALGAE_REMOVE_Angle, algaeSubsystem));
 
-        new Trigger(() -> operatorController.getPOV() == 270)
-            .onTrue(new SetElevatorLevelCommand(CoralConstants.HEIGHT_L4_ENCODER_COUNTS, elevatorSubsystem));
+
+        new Trigger(() -> driverController.getAButton())
+            .onTrue(new AlgaeIntakeCommand(algaeSubsystem));
+
+
+
+        // Experimental AlignToReef
+        /*
+         * new Trigger(() -> driverController.getPOV() == 0)
+         * .onTrue(new AlignToReefCommand(driveSubsystem, visionSubsystem, CoralConstants.ReefOffsetAngle.LEFT_CORAL));
+         * 
+         * new Trigger(() -> driverController.getPOV() == 90)
+         * .onTrue(new AlignToReefCommand(driveSubsystem, visionSubsystem, CoralConstants.ReefOffsetAngle.RIGHT_CORAL));
+         */
+
+        /*
+         * AprilTag Align
+         * new Trigger(() -> driverController.getPOV() == 0)
+         * .onTrue(new AlignToReefCommand(driveSubsystem, visionSubsystem, CoralConstants.ReefOffsetAngle.LEFT_CORAL));
+         * 
+         * new Trigger(() -> driverController.getPOV() == 90)
+         * .onTrue(new AlignToReefCommand(driveSubsystem, visionSubsystem, CoralConstants.ReefOffsetAngle.RIGHT_CORAL));
+         */
     }
 
     /*
@@ -134,6 +168,8 @@ public class OperatorInput extends SubsystemBase {
     public Integer getAutoDelay() {
         return waitTimeChooser.getSelected();
     }
+
+
 
     /*
      * Cancel Command support
@@ -192,12 +228,20 @@ public class OperatorInput extends SubsystemBase {
         return driverController.getRightX();
     }
 
+    /*
+     * This section deals with coral intake and outake system
+     */
+
     public boolean isIntake() {
-        return operatorController.getAButton();
+        return operatorController.getLeftTriggerAxis() > 0;
     }
 
     public boolean isOutTake() {
-        return operatorController.getBButton();
+        return operatorController.getRightTriggerAxis() > 0;
+    }
+
+    public boolean isEject() {
+        return operatorController.getLeftBumperButton();
     }
 
     /*
@@ -265,24 +309,16 @@ public class OperatorInput extends SubsystemBase {
 
     public double getAlgaeArmSpeed() {
 
-        if (driverController.getYButton()) {
-            return AlgaeConstants.ARM_SPEED_SLOW;
-        }
-
-        if (driverController.getAButton()) {
-            return -AlgaeConstants.ARM_SPEED_SLOW;
-        }
-
         return 0;
     }
 
-    public double getAlgaeIntakeSpeed() {
+    public double getAlgaeMotorSpeed() {
 
-        if (driverController.getXButton()) {
+        if (driverController.getLeftTriggerAxis() > 0) {
             return -AlgaeConstants.INTAKE_SPEED;
         }
-        if (driverController.getBButton()) {
-            return -AlgaeConstants.INTAKE_SPEED;
+        if (driverController.getRightTriggerAxis() > 0) {
+            return AlgaeConstants.INTAKE_SPEED;
         }
         return 0;
     }

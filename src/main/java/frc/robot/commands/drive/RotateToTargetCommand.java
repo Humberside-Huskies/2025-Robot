@@ -26,28 +26,37 @@ public class RotateToTargetCommand extends LoggingCommand {
         addRequirements(driveSubsystem);
 
         headingController.setSetpoint(0);
-        headingController.setTolerance(0.5);
+        headingController.setTolerance(0.8);
     }
+
 
     @Override
     public void initialize() {
+        logCommandStart();
+
         Pose2d currPose = driveSubsystem.getPose();
-        angleToTarget = -Math.toDegrees(Math.atan2(targetY - currPose.getY(), targetX - currPose.getX()));
+        System.out.println("Vladislav " + (targetY - currPose.getY()) + ", " + (targetX - currPose.getX()));
+        angleToTarget = 360 - Math.toDegrees(Math.atan2(targetY - currPose.getY(), targetX - currPose.getX()));
     }
 
     @Override
     public void execute() {
         double headingError = driveSubsystem.getHeadingError(angleToTarget);
         double heading      = headingController.calculate(headingError);
+        heading = Math.min(Math.max(heading, -0.1), 0.1);
 
-        System.out.println(headingError + " " + angleToTarget);
         driveSubsystem.setMotorSpeeds(-heading, heading);
     }
-
 
     @Override
     public boolean isFinished() {
         // when the robots heading error is close to 0 with tolerance
         return headingController.atSetpoint();
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+
+        logCommandEnd(interrupted);
     }
 }
