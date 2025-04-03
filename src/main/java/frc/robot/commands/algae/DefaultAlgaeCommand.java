@@ -1,6 +1,5 @@
 package frc.robot.commands.algae;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.OperatorInput;
 import frc.robot.commands.LoggingCommand;
 import frc.robot.subsystems.AlgaeSubsystem;
@@ -33,14 +32,11 @@ public class DefaultAlgaeCommand extends LoggingCommand {
     @Override
     public void execute() {
 
-        double armSpeed    = operatorInput.getAlgaeArmSpeed();
+        double algaeJoystick = operatorInput.algaeJoystick();
+        double intakeSpeed   = operatorInput.getAlgaeMotorSpeed();
 
-        double intakeSpeed = operatorInput.getAlgaeMotorSpeed();
-
-        algaeSubsystem.setArmMotorSpeed(armSpeed);
+        algaeSubsystem.setArmMotorSpeed(algaeJoystick);
         algaeSubsystem.setIntakeMotorSpeed(intakeSpeed);
-
-        SmartDashboard.putNumber("Arm Angle", algaeSubsystem.getArmEncoder() * (360 / 72));
 
     }
 

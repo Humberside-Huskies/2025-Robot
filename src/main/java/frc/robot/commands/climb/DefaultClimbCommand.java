@@ -1,6 +1,5 @@
 package frc.robot.commands.climb;
 
-import frc.robot.Constants.ClimbConstants;
 import frc.robot.OperatorInput;
 import frc.robot.commands.LoggingCommand;
 import frc.robot.subsystems.ClimbSubsystem;
@@ -37,24 +36,25 @@ public class DefaultClimbCommand extends LoggingCommand {
     @Override
     public void execute() {
 
-        if (operatorInput.isResetEncoders()) {
-            climbSubsystem.resetPrimaryEncoders();
-        }
+        // if (operatorInput.isResetEncoders()) {
+        // climbSubsystem.resetPrimaryEncoders();
+        // }
         // This is for climbing
-        if (operatorInput.isClimb() > 0.4 && !(operatorInput.isRetract() > 0.4)) {
+        // if (operatorInput.isClimb() > 0.4 && !(operatorInput.isRetract() > 0.4)) {
 
-            climbSubsystem.setMotorSpeeds((ClimbConstants.CLIMBER_MOTOR_SPEED));
-        }
+        // climbSubsystem.setMotorSpeeds((ClimbConstants.CLIMBER_MOTOR_SPEED));
+        // }
         // This is for retracting
-        else if (operatorInput.isRetract() > 0.4 && !(operatorInput.isClimb() > 0.4)) {
-            climbSubsystem.setMotorSpeeds((ClimbConstants.RETRACT_MOTOR_SPEED));
+        // else if (operatorInput.isRetract() > 0.4 && !(operatorInput.isClimb() > 0.4)) {
+        // climbSubsystem.setMotorSpeeds((ClimbConstants.RETRACT_MOTOR_SPEED));
 
-        }
-        else {
+        // }
+        // else {
 
-            climbSubsystem.stop();
-        }
+        climbSubsystem.stop();
     }
+
+    
 
 
 

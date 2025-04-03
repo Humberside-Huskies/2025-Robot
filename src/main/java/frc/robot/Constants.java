@@ -79,7 +79,7 @@ public final class Constants {
     public static final class LightsConstants {
 
         public static final int LED_STRING_PWM_PORT = 0;
-        public static final int LED_STRING_LENGTH   = 60;
+        public static final int LED_STRING_LENGTH   = 22;
     }
 
     public static final class ElevatorConstants {

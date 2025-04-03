@@ -283,6 +283,7 @@ public class OperatorInput extends SubsystemBase {
         return value;
     }
 
+
     // public double isElevatorRetract() {
     // double value = operatorController.getRightTriggerAxis();
 
@@ -298,19 +299,15 @@ public class OperatorInput extends SubsystemBase {
     /*
      * Is Climber Trigger Button
      */
-    public double isClimb() {
-        return driverController.getLeftTriggerAxis();
-    }
+    // public double isClimb() {
+    // return driverController.getLeftTriggerAxis();
+    // }
 
     // cool function buddy climbing things
-    public double isRetract() {
-        return driverController.getRightTriggerAxis();
-    }
+    // public double isRetract() {
+    // return driverController.getRightTriggerAxis();
+    // }
 
-    public double getAlgaeArmSpeed() {
-
-        return 0;
-    }
 
     public double getAlgaeMotorSpeed() {
 
@@ -321,6 +318,15 @@ public class OperatorInput extends SubsystemBase {
             return AlgaeConstants.INTAKE_SPEED;
         }
         return 0;
+    }
+
+    public double algaeJoystick() {
+        double avalue = operatorController.getRightY();
+
+        if (Math.abs(avalue) < 0.1) {
+            return 0;
+        }
+        return avalue * AlgaeConstants.ARM_SPEED_FAST;
     }
 
 
