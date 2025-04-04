@@ -1,23 +1,25 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import edu.wpi.first.wpilibj.AddressableLEDBufferView;
+import edu.wpi.first.wpilibj.LEDPattern;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LightsConstants;
 
 public class LightsSubsystem extends SubsystemBase {
 
-    private final AddressableLED           ledString        = new AddressableLED(LightsConstants.LED_STRING_PWM_PORT);
-    private final AddressableLEDBuffer     ledBuffer        = new AddressableLEDBuffer(LightsConstants.LED_STRING_LENGTH);
+    private final AddressableLED       ledString      = new AddressableLED(LightsConstants.LED_STRING_PWM_PORT);
+    private final AddressableLEDBuffer ledBuffer      = new AddressableLEDBuffer(LightsConstants.LED_STRING_LENGTH);
 
-    private final AddressableLEDBufferView leftSpeedBuffer  = new AddressableLEDBufferView(ledBuffer, 0,
-        LightsConstants.LED_STRING_LENGTH / 2);
-    private final AddressableLEDBufferView rightSpeedBuffer = new AddressableLEDBufferView(ledBuffer,
-        LightsConstants.LED_STRING_LENGTH / 2, LightsConstants.LED_STRING_LENGTH - 1).reversed();
-    private boolean                        firstTime        = true;
+    private boolean                    changeDetected = true;
+
+    private boolean                    defaultState   = true;
+    private boolean                    algaeDetected  = false;
+
+    private Timer                      philipTimer    = new Timer();
+    private final AddressableLEDBuffer philipBuffer   = new AddressableLEDBuffer(LightsConstants.LED_STRING_LENGTH);
 
     public LightsSubsystem() {
 
@@ -25,51 +27,63 @@ public class LightsSubsystem extends SubsystemBase {
         ledString.setLength(LightsConstants.LED_STRING_LENGTH);
         ledString.start();
 
-        // setLEDColor(255, 255, 0);
-    }
-
-    private void setLEDColor(int red, int green, int blue) {
-
-        for (int i = 0; i < 11; i++) {
-            leftSpeedBuffer.setRGB(i, red, green, blue);
-            // rightSpeedBuffer.setRGB(i, red, green, blue);
-            // ledBuffer.setRGB(i, red, green, blue);
-        }
-
-        ledString.setData(ledBuffer);
+        philipTimer.restart();
     }
 
     public void setLEDPhilip() {
 
+        // Switch the pattern every 0.3 seconds
+        if (!philipTimer.hasElapsed(0.3)) {
+            return;
+        }
+        philipTimer.restart();
+
+        // Make a new pattern
         for (int index = 0; index < this.ledBuffer.getLength(); index++) {
             int hue = (int) Math.floor(Math.random() * 255);
-            this.ledBuffer.setHSV(index, hue, 190, 250);
-
+            philipBuffer.setHSV(index, hue, 190, 250);
         }
-        // for (int index = 0; index < this.ledBuffer.getLength(); index++) {
-        // this.ledBuffer.setLED(index, randomColorShift(this.ledBuffer.getLED(index)));
-        // }
-        ledString.setData(this.ledBuffer);
 
+        ledString.setData(philipBuffer);
     }
 
-    private Color randomColorShift(Color aColor) {
-        return new Color(randomShift(aColor.red), randomShift(aColor.green), randomShift(aColor.blue));
-    }
+    public void setAlgaeDetected(boolean algaeDetected) {
 
-    private double randomShift(double value) {
-        double sign   = Math.random() >= 0.5 ? 1.0 : -1.0;
-        double amount = Math.random() / 10;
-        return MathUtil.clamp(value + sign * amount, 0, 1);
+        // Determine if this is a new state for the algae
+        if (algaeDetected != this.algaeDetected) {
+            this.algaeDetected = algaeDetected;
+            changeDetected     = true;
+        }
     }
-
-    public boolean isAnimated() {
-        return true;
-    }
-
 
     @Override
     public void periodic() {
-        setLEDPhilip();
+
+        // Only write the buffer if a change is detected
+        // Don't rewrite it every loop.
+        if (changeDetected) {
+
+            defaultState = false;
+
+            if (algaeDetected) {
+                LEDPattern.solid(Color.kAzure).applyTo(ledBuffer);
+            }
+            // FIXME: add more patterns here
+            else {
+                // Default state
+                defaultState = true;
+            }
+
+            changeDetected = false;
+
+            if (!defaultState) {
+                ledString.setData(ledBuffer);
+            }
+        }
+
+        if (defaultState) {
+            setLEDPhilip();
+        }
     }
+
 }

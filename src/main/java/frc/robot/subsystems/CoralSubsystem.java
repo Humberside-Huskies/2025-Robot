@@ -15,15 +15,19 @@ import frc.robot.Constants.CoralConstants;
 public class CoralSubsystem extends SubsystemBase {
 
     // The motors on the left side of the drive.
-    private final SparkMax   primaryMotor      = new SparkMax(CoralConstants.CORAL_MOTOR_CAN_ID,
+    private final SparkMax        primaryMotor      = new SparkMax(CoralConstants.CORAL_MOTOR_CAN_ID,
         MotorType.kBrushless);
 
-    private SparkLimitSwitch primaryLimitSwitch;
+    private SparkLimitSwitch      primaryLimitSwitch;
 
-    private double           primaryMotorSpeed = 0;
+    private double                primaryMotorSpeed = 0;
+
+    private final LightsSubsystem lightsSubsystem;
 
     /** Creates a new ElevatorSubsystem. */
-    public CoralSubsystem() {
+    public CoralSubsystem(LightsSubsystem lightsSubsystem) {
+
+        this.lightsSubsystem = lightsSubsystem;
 
         // right motor
         SparkMaxConfig config = new SparkMaxConfig();

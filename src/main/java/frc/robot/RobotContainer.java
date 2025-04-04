@@ -36,9 +36,9 @@ public class RobotContainer {
     private final DriveSubsystem    driveSubsystem    = new DriveSubsystem(lightsSubsystem);
     private final VisionSubsystem   visionSubsystem   = new VisionSubsystem(lightsSubsystem);
     private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(lightsSubsystem);
-    private final CoralSubsystem    coralSubsystem    = new CoralSubsystem();
+    private final CoralSubsystem    coralSubsystem    = new CoralSubsystem(lightsSubsystem);
     private final ClimbSubsystem    climbSubsystem    = new ClimbSubsystem(lightsSubsystem);
-    private final AlgaeSubsystem    algaeSubsystem    = new AlgaeSubsystem();
+    private final AlgaeSubsystem    algaeSubsystem    = new AlgaeSubsystem(lightsSubsystem);
     // Driver and operator controllers
     private final OperatorInput     operatorInput     = new OperatorInput();
 

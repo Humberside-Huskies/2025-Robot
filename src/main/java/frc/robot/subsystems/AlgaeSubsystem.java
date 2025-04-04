@@ -14,22 +14,25 @@ import frc.robot.Constants.AlgaeConstants;
 
 public class AlgaeSubsystem extends SubsystemBase {
 
-    private final SparkMax     armMotor         = new SparkMax(AlgaeConstants.ARM_MOTOR_CAN_ID,
+    private final SparkMax        armMotor         = new SparkMax(AlgaeConstants.ARM_MOTOR_CAN_ID,
         MotorType.kBrushless);
 
-    private final SparkMax     intakeMotor      = new SparkMax(
+    private final SparkMax        intakeMotor      = new SparkMax(
         AlgaeConstants.INTAKE_MOTOR_CAN_ID,
         MotorType.kBrushless);
 
-    private final DigitalInput sensor           = new DigitalInput(1);
+    private final DigitalInput    sensor           = new DigitalInput(1);
 
-    private double             armMotorSpeed    = 0;
-    private double             intakeMotorSpeed = 0;
-    private double             OutakeMotorSpeed = 0;
+    private double                armMotorSpeed    = 0;
+    private double                intakeMotorSpeed = 0;
+    private double                OutakeMotorSpeed = 0;
 
+    private final LightsSubsystem lightsSubsystem;
 
     /** Creates a new AlgaeSubsystem. */
-    public AlgaeSubsystem() {
+    public AlgaeSubsystem(LightsSubsystem lightsSubsystem) {
+
+        this.lightsSubsystem = lightsSubsystem;
 
         // motor setup
         SparkMaxConfig config = new SparkMaxConfig();
@@ -86,8 +89,9 @@ public class AlgaeSubsystem extends SubsystemBase {
     public double getHoldCurrent() {
         double holdCurrent = AlgaeConstants.ARM_HOLD_SPEED;
 
-        if (getSensor())
+        if (getSensor()) {
             holdCurrent += AlgaeConstants.ARM_HOLD_ALGAE_SPEED_GAIN;
+        }
         return Math.sin(getArmDegrees() * (Math.PI / 180)) * holdCurrent;
     }
 
@@ -99,6 +103,9 @@ public class AlgaeSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+
+        lightsSubsystem.setAlgaeDetected(getSensor());
+
         SmartDashboard.putNumber("Arm Motor", Math.round(armMotorSpeed * 100.0d) / 100.0d);
         SmartDashboard.putNumber("Intake Motor", Math.round(intakeMotorSpeed * 100.0d) / 100.0d);
         SmartDashboard.putNumber("Arm Angle", getArmDegrees());
