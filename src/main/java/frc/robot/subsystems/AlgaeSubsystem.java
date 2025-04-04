@@ -116,8 +116,3 @@ public class AlgaeSubsystem extends SubsystemBase {
         return sb.toString();
     }
 }
-// A - init position
-// B - intake position
-// X - shoot position
-// Y - remove position
-// RT - Out

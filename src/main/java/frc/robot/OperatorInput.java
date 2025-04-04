@@ -137,25 +137,6 @@ public class OperatorInput extends SubsystemBase {
         new Trigger(() -> driverController.getAButton())
             .onTrue(new AlgaeIntakeCommand(algaeSubsystem));
 
-
-
-        // Experimental AlignToReef
-        /*
-         * new Trigger(() -> driverController.getPOV() == 0)
-         * .onTrue(new AlignToReefCommand(driveSubsystem, visionSubsystem, CoralConstants.ReefOffsetAngle.LEFT_CORAL));
-         * 
-         * new Trigger(() -> driverController.getPOV() == 90)
-         * .onTrue(new AlignToReefCommand(driveSubsystem, visionSubsystem, CoralConstants.ReefOffsetAngle.RIGHT_CORAL));
-         */
-
-        /*
-         * AprilTag Align
-         * new Trigger(() -> driverController.getPOV() == 0)
-         * .onTrue(new AlignToReefCommand(driveSubsystem, visionSubsystem, CoralConstants.ReefOffsetAngle.LEFT_CORAL));
-         * 
-         * new Trigger(() -> driverController.getPOV() == 90)
-         * .onTrue(new AlignToReefCommand(driveSubsystem, visionSubsystem, CoralConstants.ReefOffsetAngle.RIGHT_CORAL));
-         */
     }
 
     /*
@@ -168,8 +149,6 @@ public class OperatorInput extends SubsystemBase {
     public Integer getAutoDelay() {
         return waitTimeChooser.getSelected();
     }
-
-
 
     /*
      * Cancel Command support
@@ -255,11 +234,6 @@ public class OperatorInput extends SubsystemBase {
         driverController.setRumble(GenericHID.RumbleType.kBothRumble, 0);
     }
 
-    // public boolean driveToAprilTag() {
-    // return driverController.getAButton();
-    // }
-
-
     @Override
     public void periodic() {
         SmartDashboard.putString("Driver Controller", driverController.toString());
@@ -283,31 +257,9 @@ public class OperatorInput extends SubsystemBase {
         return value;
     }
 
-
-    // public double isElevatorRetract() {
-    // double value = operatorController.getRightTriggerAxis();
-
-    // if (value < 0.1)
-    // return 0;
-    // return value;
-    // }
-
     public boolean isResetEncoders() {
         return driverController.getBackButton();
     }
-
-    /*
-     * Is Climber Trigger Button
-     */
-    // public double isClimb() {
-    // return driverController.getLeftTriggerAxis();
-    // }
-
-    // cool function buddy climbing things
-    // public double isRetract() {
-    // return driverController.getRightTriggerAxis();
-    // }
-
 
     public double getAlgaeMotorSpeed() {
 
@@ -328,9 +280,4 @@ public class OperatorInput extends SubsystemBase {
         }
         return avalue * AlgaeConstants.ARM_SPEED_FAST;
     }
-
-
-
-    // public boolean
-
 }

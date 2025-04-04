@@ -42,13 +42,11 @@ public class LightsSubsystem extends SubsystemBase {
     public void setLEDPhilip() {
 
         for (int index = 0; index < this.ledBuffer.getLength(); index++) {
-            int hue = (int) Math.floor(Math.random() * 255);
-            this.ledBuffer.setHSV(index, hue, 190, 250);
+            // int hue = (int) Math.floor(Math.random() * 255);
+            this.ledBuffer.setHSV(index, 25, 190, 250);
 
         }
-        // for (int index = 0; index < this.ledBuffer.getLength(); index++) {
-        // this.ledBuffer.setLED(index, randomColorShift(this.ledBuffer.getLED(index)));
-        // }
+
         ledString.setData(this.ledBuffer);
 
     }

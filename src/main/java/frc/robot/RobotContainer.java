@@ -7,7 +7,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.algae.DefaultAlgaeCommand;
 import frc.robot.commands.auto.AutoCommand;
-import frc.robot.commands.climb.DefaultClimbCommand;
 import frc.robot.commands.drive.DefaultDriveCommand;
 import frc.robot.commands.elevator.DefaultElevatorCommand;
 import frc.robot.subsystems.AlgaeSubsystem;
@@ -51,12 +50,8 @@ public class RobotContainer {
         driveSubsystem.setDefaultCommand(
             new DefaultDriveCommand(operatorInput, driveSubsystem));
 
-        climbSubsystem.setDefaultCommand(
-            new DefaultClimbCommand(climbSubsystem, operatorInput, lightsSubsystem));
-
         elevatorSubsystem.setDefaultCommand(
             new DefaultElevatorCommand(operatorInput, elevatorSubsystem, lightsSubsystem));
-
 
         algaeSubsystem.setDefaultCommand(
             new DefaultAlgaeCommand(operatorInput, algaeSubsystem));
