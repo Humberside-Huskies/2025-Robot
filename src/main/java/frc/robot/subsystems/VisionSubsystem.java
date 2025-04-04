@@ -71,8 +71,7 @@ public class VisionSubsystem extends SubsystemBase {
     public String toString() {
         // Create an appropriate text readable string describing the state of the
         // subsystem
-        // Tony is gay
 
-        return "Vlad was working in this file,....okey";
+        return "";
     }
 }

@@ -1,5 +1,6 @@
 package frc.robot.commands.algae;
 
+import frc.robot.Constants.AlgaeConstants;
 import frc.robot.OperatorInput;
 import frc.robot.commands.LoggingCommand;
 import frc.robot.subsystems.AlgaeSubsystem;
@@ -34,6 +35,10 @@ public class DefaultAlgaeCommand extends LoggingCommand {
 
         double algaeJoystick = operatorInput.algaeJoystick();
         double intakeSpeed   = operatorInput.getAlgaeMotorSpeed();
+
+        if (algaeSubsystem.getSensor() && intakeSpeed == 0) {
+            intakeSpeed = AlgaeConstants.INTAKE_HOLD_ALGAE_SPEED;
+        }
 
         algaeSubsystem.setArmMotorSpeed(algaeJoystick);
         algaeSubsystem.setIntakeMotorSpeed(intakeSpeed);

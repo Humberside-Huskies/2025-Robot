@@ -78,23 +78,8 @@ public class AutoCommand extends SequentialCommandGroup {
             return;
 
         case PATH_TEST_THING:
-            addCommands(new DriveToTargetCommand(1, 0, driveSubsystem));
-            addCommands(new DriveToTargetCommand(1, 1, driveSubsystem));
-
-            // addCommands(new DriveToTargetCommand(1.5, 0.4, driveSubsystem));
-
-            // addCommands(new DriveToTargetCommand(3, 3, driveSubsystem));
-            // addCommands(new DriveToTargetCommand(1, 1, driveSubsystem));
-
-            // double[][] targets = { { 6.26, 4.22 } };
-
-            // for (int i = 0; i < targets.length; i++) {
-            // double targetX = targets[i][0];
-            // double targetY = targets[i][1];
-
-            // addCommands(new RotateToTargetCommand(targetX, targetY, driveSubsystem));
-            // // addCommands(new DriveToTargetCommand(targetX, targetY, driveSubsystem));
-            // }
+            addCommands(new DriveToTargetCommand(5.6, 4, driveSubsystem));
+            // addCommands(new DriveToTargetCommand(1, 3, driveSubsystem));
             return;
 
         case BOX:

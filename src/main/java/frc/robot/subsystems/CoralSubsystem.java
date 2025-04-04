@@ -60,7 +60,6 @@ public class CoralSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-
         SmartDashboard.putNumber("Coral Motor", primaryMotorSpeed);
     }
 

@@ -26,7 +26,7 @@ public class RotateToTargetCommand extends LoggingCommand {
         addRequirements(driveSubsystem);
 
         headingController.setSetpoint(0);
-        headingController.setTolerance(0.8);
+        headingController.setTolerance(0.5);
     }
 
 
@@ -35,7 +35,6 @@ public class RotateToTargetCommand extends LoggingCommand {
         logCommandStart();
 
         Pose2d currPose = driveSubsystem.getPose();
-        System.out.println("Vladislav " + (targetY - currPose.getY()) + ", " + (targetX - currPose.getX()));
         angleToTarget = 360 - Math.toDegrees(Math.atan2(targetY - currPose.getY(), targetX - currPose.getX()));
     }
 

@@ -10,6 +10,7 @@ import frc.robot.commands.auto.AutoCommand;
 import frc.robot.commands.climb.DefaultClimbCommand;
 import frc.robot.commands.drive.DefaultDriveCommand;
 import frc.robot.commands.elevator.DefaultElevatorCommand;
+import frc.robot.commands.vision.DefaultVisionCommand;
 import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
@@ -61,8 +62,8 @@ public class RobotContainer {
         algaeSubsystem.setDefaultCommand(
             new DefaultAlgaeCommand(operatorInput, algaeSubsystem));
 
-        // visionSubsystem.setDefaultCommand(
-        // new DefaultVisionCommand(driveSubsystem, visionSubsystem));
+        visionSubsystem.setDefaultCommand(
+            new DefaultVisionCommand(driveSubsystem, visionSubsystem));
 
         // Configure the button bindings - pass in all subsystems
         operatorInput.configureButtonBindings(driveSubsystem, elevatorSubsystem, coralSubsystem, algaeSubsystem);

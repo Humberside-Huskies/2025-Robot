@@ -155,7 +155,7 @@ public final class Constants {
     }
 
     public static final class VisionConstants {
-        public static final double AMBIGUITY_THRESHOLD_MEGATAG = 0.3;
+        public static final double AMBIGUITY_THRESHOLD_MEGATAG = 0.1;
         public static final double mountedAngleDegrees         = 18.0;
         public static final double mountedHeightMeters         = 0.160655;
 
@@ -180,6 +180,7 @@ public final class Constants {
         public static final double  ARM_SPEED_FAST                      = .3;
         public static final double  ARM_HOLD_SPEED                      = -.02;
         public static final double  ARM_HOLD_ALGAE_SPEED_GAIN           = -.01;
+        public static final double  INTAKE_HOLD_ALGAE_SPEED             = 0.08;
 
         // Algae Intake Motor speed
         public static final double  INTAKE_SPEED                        = 0.3;

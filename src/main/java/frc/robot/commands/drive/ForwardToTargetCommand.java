@@ -11,8 +11,8 @@ public class ForwardToTargetCommand extends LoggingCommand {
     private final double         targetX;
     private final double         targetY;
 
-    private final PIDController  xController = new PIDController(0.2, 0, 0);
-    private final PIDController  yController = new PIDController(0.2, 0, 0);
+    private final PIDController  xController = new PIDController(0.5, 0, 0);
+    private final PIDController  yController = new PIDController(0.5, 0, 0);
 
     private final DriveSubsystem driveSubsystem;
 
@@ -24,8 +24,8 @@ public class ForwardToTargetCommand extends LoggingCommand {
         addRequirements(driveSubsystem);
 
         // set tolerances of x and y
-        xController.setTolerance(0.2);
-        yController.setTolerance(0.2);
+        xController.setTolerance(0.05);
+        yController.setTolerance(0.05);
     }
 
     @Override

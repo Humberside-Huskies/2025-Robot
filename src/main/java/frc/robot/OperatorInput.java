@@ -326,7 +326,7 @@ public class OperatorInput extends SubsystemBase {
         if (Math.abs(avalue) < 0.1) {
             return 0;
         }
-        return avalue * AlgaeConstants.ARM_SPEED_FAST;
+        return -avalue * AlgaeConstants.ARM_SPEED_FAST;
     }
 
 
